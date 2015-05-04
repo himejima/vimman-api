@@ -47,9 +47,24 @@ def create():
 @app.route('/', methods=['GET'])
 @crossdomain(origin='*')
 def index():
+    # per_pageとpageを取得
+    # TODO: 数字のみを検索するように修正する
+    per_page = request.args.get('per_page', 20)
+    page = request.args.get('page', 1)
+    my_offset = (int(page) - 1) * int(per_page)
+    # logging.info(per_page)
+    # logging.info(page)
+    # logging.info(my_offset)
     try:
         informations = []
-        res = Information.query.all()
+        res = (
+                Information.query
+                .order_by(Information.id)
+                .offset(my_offset)
+                .limit(per_page)
+                .all()
+            )
+
         for row in res:
             informations.append(row)
         informations_dict = ListInformationMapper({'result': informations}).as_dict()
