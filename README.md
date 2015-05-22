@@ -35,21 +35,21 @@
 
 1) Setting MySQL
 
-    $ mysql -u {MYSQL_USER_NAME} < src/api/data/sql/mysql_createdb.sql
-    $ mysql -u {MYSQL_USER_NAME} vimmanbot < src/api/data/sql/mysql_schema.sql
+    $ mysql -u {MYSQL_USER_NAME} < src/data/sql/mysql_createdb.sql
+    $ mysql -u {MYSQL_USER_NAME} vimman < src/data/sql/mysql_schema.sql
 
 2) Execute to command of below.
 
-    $ pip install -r src/api/requirements.txt
+    $ pip install -r src/requirements.txt
     $ cp config/databases.py.sample config/databases.py
-    $ python src/api/app.py
+    $ python src/app.py
 
 3) Access to `localhost:5000`. ex) `localhost:5000/questions`
 
 
 ## Contribution
 
-1. Fork it ( http://github.com/OMOSAN/vimmanbot-app/fork )
+1. Fork it ( http://github.com/OMOSAN/vimman-api/fork )
 2. Create your feature branch (git checkout -b my-new-feature)
 3. Commit your changes (git commit -am 'Add some feature')
 4. Push to the branch (git push origin my-new-feature)
