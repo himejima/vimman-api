@@ -1,5 +1,5 @@
 import sys, os, json, unittest, urllib
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/../../src/api/')
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/../src/')
 import app
 
 class ApiTestCase(unittest.TestCase):

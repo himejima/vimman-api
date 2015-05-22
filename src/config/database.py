@@ -3,7 +3,7 @@
 db_config = {
     'type': 'mysql',
     'host': 'localhost',
-    'db': 'vimmanbot',
+    'db': 'vimman',
     'user': 'root',
     'passwd': '',
     'port': 3306,
