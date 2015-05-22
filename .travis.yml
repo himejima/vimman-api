@@ -4,7 +4,7 @@ php:
   - 2.7
 
 before_script:
-  - pip install -r src/requirements.txt
+  - pip install -r requirements.txt
   - cp src/config/databases.py.sample src/config/databases.py
   - mysql -u root < src/data/sql/mysql_createdb.sql
   - mysql -u root vimman < src/data/sql/mysql_schema.sql
@@ -14,6 +14,6 @@ script:
 
 notifications:
   email:
-    recipients: project.omosan+vimman@gmail.com
+    recipients: project.omosan+vimman-api@gmail.com
     on_success: always # [always|never|change]
     on_failure: always # [always|never|change]
