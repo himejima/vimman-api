@@ -6,8 +6,8 @@ php:
 before_script:
   - pip install -r requirements.txt
   - cp src/config/databases.py.sample src/config/databases.py
-  - mysql -u root < src/data/sql/mysql_createdb.sql
-  - mysql -u root vimman < src/data/sql/mysql_schema.sql
+  - mysql -u root < data/sql/mysql_createdb.sql
+  - mysql -u root vimman < data/sql/mysql_schema.sql
 
 script:
   - python -m unittest discover -s tests/ -p '*_test.py'

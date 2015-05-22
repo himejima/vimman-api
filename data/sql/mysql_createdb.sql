@@ -1,3 +1,3 @@
--- Vimmanbot MySQL Database
+-- vimman-api MySQL Database
 -- 
-CREATE DATABASE vimmanbot DEFAULT CHARACTER SET utf8;
+CREATE DATABASE vimman DEFAULT CHARACTER SET utf8;
