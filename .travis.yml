@@ -4,19 +4,16 @@ php:
   - 2.7
 
 before_script:
-  - pip install -r src/api/requirements.txt
-  - cp src/api/config/databases.py.sample src/api/config/databases.py
-  - mysql -u root < src/api/data/sql/mysql_createdb.sql
-  - mysql -u root vimmanbot < src/api/data/sql/mysql_schema.sql
+  - pip install -r requirements.txt
+  - cp src/config/databases.py.sample src/config/databases.py
+  - mysql -u root < data/sql/mysql_createdb.sql
+  - mysql -u root vimman < data/sql/mysql_schema.sql
 
 script:
-  - python -m unittest discover -s tests/api/ -p '*_test.py'
+  - python -m unittest discover -s tests/ -p '*_test.py'
 
 notifications:
   email:
-    recipients:
-      - tetsuwo.oishi+travis-ci@gmail.com
-      - himejima.development@gmail.com
-      - masahiiiro01@gmail.com
+    recipients: project.omosan+vimman-api@gmail.com
     on_success: always # [always|never|change]
     on_failure: always # [always|never|change]
