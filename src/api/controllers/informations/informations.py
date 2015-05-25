@@ -49,18 +49,23 @@ def create():
 def index():
     # per_pageとpageを取得
     # TODO: 数字のみを検索するように修正する
-    per_page = request.args.get('per_page', 20)
-    page = request.args.get('page', 1)
-    my_offset = (int(page) - 1) * int(per_page)
+    # per_page = request.args.get('per_page', 20)
+    # page = request.args.get('page', 1)
+    per_page = 20
+    # my_offset = (int(page) - 1) * int(per_page)
     # logging.info(per_page)
     # logging.info(page)
     # logging.info(my_offset)
+    param_id = request.args.get('id', '')
+    # 0ならばcursorが指定されていない
+    param_cursor = request.args.get('cursor', 0)
+    param_query = request.args.get('q', '')
+
     try:
         informations = []
         res = (
                 Information.query
-                .order_by(Information.id)
-                .offset(my_offset)
+                .order_by(Information.id.desc())
                 .limit(per_page)
                 .all()
             )
@@ -69,7 +74,15 @@ def index():
             informations.append(row)
         informations_dict = ListInformationMapper({'result': informations}).as_dict()
         result = informations_dict['result']
-        return jsonify(result=result), 200
+
+        # 空でなければ
+        logging.info(result[-1]['id'])
+        prev_cursor = (-1) * result[-1]['id']
+        next_cursor = result[0]['id']
+
+        cursor = { 'prev' : prev_cursor, 'next' : next_cursor }
+        
+        return jsonify(result=result, cursor=cursor), 200
     except:
         logging.error(request)
     return '', 404
