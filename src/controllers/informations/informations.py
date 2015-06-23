@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
-from flask import Blueprint, jsonify, request, session
-from helpers.crossdomain import *
+from flask import Blueprint
+from flask import jsonify
+from flask import redirect
+from flask import request
+from flask import session
+from helpers.crossdomain import crossdomain
 from models.model import *
 
 from datetime import datetime as dt
@@ -12,6 +16,7 @@ LOG_FILENAME = 'example.log'
 logging.basicConfig(filename=LOG_FILENAME, level=logging.INFO)
 
 app = Blueprint(__name__, 'informations')
+
 
 @app.route('/', methods=['POST'])
 @crossdomain(origin='*')
@@ -44,6 +49,7 @@ def create():
         logging.error(req)
     return '', 400
 
+
 @app.route('/', methods=['GET'])
 @crossdomain(origin='*')
 def index():
@@ -58,6 +64,7 @@ def index():
     except:
         logging.error(request)
     return '', 404
+
 
 @app.route('/<information_id>', methods=['GET'])
 @crossdomain(origin='*')
@@ -74,6 +81,7 @@ def read(information_id):
     except:
         logging.error(request)
     return '', 404
+
 
 @app.route('/<information_id>', methods=['PUT'])
 @crossdomain(origin='*')
@@ -100,6 +108,7 @@ def update(information_id):
     except:
         logging.error(req)
     return '', 404
+
 
 @app.route('/<information_id>', methods=['DELETE'])
 @crossdomain(origin='*')
