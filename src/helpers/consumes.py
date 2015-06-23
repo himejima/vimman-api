@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from functools import wraps
+from flask import abort
+from flask import request
 
 
 def consumes(content_type):
