@@ -2,7 +2,6 @@
 from sqlalchemy import *
 from sqlalchemy.orm import *
 from sqlalchemy.ext.declarative import declarative_base
-
 from datetime import datetime as dt
 from mappers.mapper import *
 from config.databases import *
@@ -23,6 +22,7 @@ db_session = scoped_session(sessionmaker(autocommit=False,
 Base = declarative_base()
 Base.query = db_session.query_property()
 
+
 class Operator(Base):
     __tablename__ = 'operators'
     id = Column(Integer, primary_key=True)
@@ -42,6 +42,7 @@ class Operator(Base):
         self.created_at = created_at
         self.updated_at = updated_at
 
+
 class Question(Base):
     __tablename__ = 'questions'
     id = Column(Integer, primary_key=True)
@@ -51,7 +52,6 @@ class Question(Base):
     updated_by = Column(String)
     created_at = Column(DateTime, default=dt.now)
     updated_at = Column(DateTime, default=dt.now)
-
     answers = relationship('Answer')
     creator = relationship('Operator',
             primaryjoin="Question.created_by==Operator.id",
@@ -59,7 +59,6 @@ class Question(Base):
     updater = relationship('Operator',
             primaryjoin="Question.updated_by==Operator.id",
             foreign_keys="Operator.id")
-
     def __init__(self, id, content, state, created_by, updated_by, created_at, updated_at):
         self.id = id
         self.content = content
@@ -68,6 +67,7 @@ class Question(Base):
         self.updated_by = updated_by
         self.created_at = created_at
         self.updated_at = updated_at
+
 
 class Answer(Base):
     __tablename__ = 'answers'
@@ -79,14 +79,12 @@ class Answer(Base):
     updated_by = Column(String(50))
     created_at = Column(DateTime, default=dt.now)
     updated_at = Column(DateTime, default=dt.now)
-
     creator = relationship('Operator',
             primaryjoin="Answer.created_by==Operator.id",
             foreign_keys="Operator.id")
     updater = relationship('Operator',
             primaryjoin="Answer.updated_by==Operator.id",
             foreign_keys="Operator.id")
-
     def __init__(self, id, question_id, content, state, created_by, updated_by, created_at, updated_at):
         self.id = id
         self.question_id = question_id
@@ -96,6 +94,7 @@ class Answer(Base):
         self.updated_by = updated_by
         self.created_at = created_at
         self.updated_at = updated_at
+
 
 class Information(Base):
     __tablename__ = 'informations'
@@ -122,6 +121,7 @@ class Information(Base):
         self.updated_by = updated_by
         self.created_at = created_at
         self.updated_at = updated_at
+
 
 class Tweet(Base):
     __tablename__ = 'tweets'
@@ -152,6 +152,7 @@ class Tweet(Base):
         self.updated_by = updated_by
         self.created_at = created_at
         self.updated_at = updated_at
+
 
 class Response(Base):
     __tablename__ = 'responses'
