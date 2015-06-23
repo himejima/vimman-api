@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-
 u""" Database Helpers
 """
-
-import sqlite3
 from contextlib import closing
+import sqlite3
+
 
 def connect_db(database):
     return sqlite3.connect(database)
