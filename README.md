@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/OMOSAN/vimman-api.svg?branch=master)](https://travis-ci.org/OMOSAN/vimman-api)
 [![Join the chat at https://gitter.im/OMOSAN/vimman-api](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/OMOSAN/vimman-api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Coverage Status](https://coveralls.io/repos/OMOSAN/vimman-api/badge.svg?branch=master)](https://coveralls.io/r/OMOSAN/vimman-api?branch=master)
 
 
 ## Development
