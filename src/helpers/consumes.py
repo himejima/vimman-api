@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-
-#from flask import request
 from functools import wraps
+
 
 def consumes(content_type):
     def _consumes(function):
