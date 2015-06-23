@@ -1,11 +1,17 @@
-import sys, os, json, unittest, urllib
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/../src/')
-import app
+import os
+import sys
+import unittest
 
-class ApiTestCase(unittest.TestCase):
-    def setUp(self):
-        app.app.debug = False
-        self.app = app.app.test_client()
+TEST_TARGETS = [
+    'api_informations_test',
+    'api_operators_test',
+    'api_questions_test',
+]
 
-if __name__ == '__main__':
-    unittest.main()
+
+def suite():
+    suite = unittest.TestSuite()
+    for testmodule in TEST_TARGETS:
+        exec 'from ' + testmodule + ' import suite as _suite'
+        suite.addTests(_suite())
+    return suite
