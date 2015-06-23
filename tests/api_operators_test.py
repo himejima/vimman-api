@@ -2,6 +2,7 @@ import sys, os, json, unittest, urllib
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/../src/')
 import app
 
+
 class ApiOperatorsTestCase(unittest.TestCase):
     def setUp(self):
         app.app.debug = False
@@ -139,5 +140,8 @@ class ApiOperatorsTestCase(unittest.TestCase):
         )
         assert raw_response.status_code == 404
 
-if __name__ == '__main__':
-    unittest.main()
+
+def suite():
+    suite = unittest.TestSuite()
+    suite.addTests(unittest.makeSuite(ApiOperatorsTestCase))
+    return suite
