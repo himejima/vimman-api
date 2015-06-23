@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-from flask import Blueprint, jsonify, request, session
-from helpers.crossdomain import *
+from flask import Blueprint,
+from flask import jsonify
+from flask import request
+from flask import session
+from helpers.crossdomain import crossdomain
 from models.model import *
-
 from datetime import datetime as dt
 from config.databases import *
 import json
-
 import logging
 LOG_FILENAME = 'questions.log'
 logging.basicConfig(
@@ -17,6 +18,7 @@ logging.basicConfig(
 )
 
 app = Blueprint(__name__, 'questions')
+
 
 # TODO: パラメータ不足時のエラー処理
 @app.route('/', methods=['POST'])
@@ -66,12 +68,10 @@ def create():
         db_session.rollback()
     return '', 400
 
+
 @app.route('/', methods=['GET'])
 @crossdomain(origin='*')
 def index_questions():
-    # TODO: 公開時にコメントイン
-    #if request.headers['Api-Key'] != API_ACCESS_KEY:
-    #    abort(401)
     try:
         questions = []
         res = Question.query.all()
@@ -83,6 +83,7 @@ def index_questions():
     except:
         logging.error(request)
     return '', 404
+
 
 @app.route('/<question_id>', methods=['GET'])
 @crossdomain(origin='*')
@@ -99,6 +100,7 @@ def show_question(question_id):
     except:
         logging.error(request)
     return '', 404
+
 
 # TODO: パラメータ不足時のエラー処理
 @app.route('/<question_id>', methods=['PUT'])
