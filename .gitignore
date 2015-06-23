@@ -8,3 +8,8 @@ node_modules/
 *.pyc
 databases.py
 .env
+
+# coveralls
+.coverage
+*.egg
+*.egg-info
