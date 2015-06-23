@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
-from flask import Blueprint, jsonify, request, _request_ctx_stack
-from helpers.crossdomain import *
+from flask import Blueprint
+from flask import jsonify
+from flask import redirect
+from flask import request
+from flask import session
+from helpers.crossdomain import crossdomain
 from models.model import *
-
 from datetime import datetime as dt
 from config.databases import *
 import json
@@ -13,6 +16,7 @@ logging.basicConfig(filename=LOG_FILENAME, level=logging.INFO)
 
 app = Blueprint(__name__, 'operators')
 
+
 @app.route('/', methods=['POST'])
 @crossdomain(origin='*')
 def create():
@@ -22,7 +26,7 @@ def create():
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
     req = json.loads(request.data)
     try:
-        # TODO: saltのセット方法 + パスワードを暗号化する
+#        TODO: saltのセット方法 + パスワードを暗号化する
         operator = Operator(
             id=None,
             username=req['username'],
@@ -43,6 +47,7 @@ def create():
         logging.error(req)
     return '', 400
 
+
 @app.route('/', methods=['GET'])
 @crossdomain(origin='*')
 def index():
@@ -54,6 +59,7 @@ def index():
     except:
         logging.error(request)
     return '', 404
+
 
 @app.route('/<operator_id>', methods=['GET'])
 @crossdomain(origin='*')
@@ -67,10 +73,12 @@ def read(operator_id):
         logging.error(request)
     return '', 404
 
+
 def get_operator(operator_id):
     operator = None
     operator = Operator.query.filter("id = :operator_id").params(operator_id=operator_id).first()
     return operator
+
 
 def get_operators():
     operators = []
@@ -78,6 +86,7 @@ def get_operators():
     for row in res:
         operators.append(row)
     return operators
+
 
 @app.route('/<operator_id>', methods=['PUT'])
 @crossdomain(origin='*')
@@ -95,7 +104,7 @@ def update(operator_id):
         row.state = req['state']
         row.updated_at = tstr
         db_session.flush()
-        # なぜ必要？ 調査
+#         なぜ必要？ 調査
         db_session.commit()
         result['id'] = row.id
         result['username'] = row.username
@@ -104,6 +113,7 @@ def update(operator_id):
     except:
         logging.error(req)
     return '', 404
+
 
 @app.route('/<operator_id>', methods=['DELETE'])
 @crossdomain(origin='*')
@@ -117,6 +127,7 @@ def delete(operator_id):
     except:
         logging.error(request)
     return '', 404
+
 
 def delete_all():
     try:
