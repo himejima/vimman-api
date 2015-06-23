@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-from bpmappers import Mapper, RawField, DelegateField, ListDelegateField
+from bpmappers import DelegateField
+from bpmappers import ListDelegateField
+from bpmappers import Mapper
+from bpmappers import RawField
+
+
 class OperatorMapper(Mapper):
     id = RawField()
     username = RawField()
@@ -7,8 +12,10 @@ class OperatorMapper(Mapper):
     created_at = RawField()
     updated_at = RawField()
 
+
 class ListOperatorMapper(Mapper):
     result = ListDelegateField(OperatorMapper)
+
 
 class AnswerMapper(Mapper):
     id = RawField()
@@ -19,12 +26,13 @@ class AnswerMapper(Mapper):
     updated_by = RawField()
     created_at = RawField()
     updated_at = RawField()
-
     creator = ListDelegateField(OperatorMapper)
     updater = ListDelegateField(OperatorMapper)
 
+
 class ListAnswerMapper(Mapper):
     pass
+
 
 class QuestionMapper(Mapper):
     id = RawField()
@@ -34,14 +42,15 @@ class QuestionMapper(Mapper):
     updated_by = RawField()
     created_at = RawField()
     updated_at = RawField()
-
     answers = ListDelegateField(AnswerMapper)
     creator = ListDelegateField(OperatorMapper)
     updater = ListDelegateField(OperatorMapper)
 
+
 class ListQuestionMapper(Mapper):
-    #question_list = ListDelegateField(QuestionMapper)
+#    question_list = ListDelegateField(QuestionMapper)
     result = ListDelegateField(QuestionMapper)
+
 
 class InformationMapper(Mapper):
     id = RawField()
@@ -51,12 +60,13 @@ class InformationMapper(Mapper):
     updated_by = RawField()
     created_at = RawField()
     updated_at = RawField()
-
     creator = ListDelegateField(OperatorMapper)
     updater = ListDelegateField(OperatorMapper)
 
+
 class ListInformationMapper(Mapper):
     result = ListDelegateField(InformationMapper)
+
 
 class TweetMapper(Mapper):
     id = RawField()
@@ -68,12 +78,13 @@ class TweetMapper(Mapper):
     updated_by = RawField()
     created_at = RawField()
     updated_at = RawField()
-
     creator = ListDelegateField(OperatorMapper)
     updater = ListDelegateField(OperatorMapper)
 
+
 class ListTweetMapper(Mapper):
     result = ListDelegateField(TweetMapper)
+
 
 class ResponseMapper(Mapper):
     id = RawField()
@@ -84,9 +95,9 @@ class ResponseMapper(Mapper):
     updated_by = RawField()
     created_at = RawField()
     updated_at = RawField()
-
     creator = ListDelegateField(OperatorMapper)
     updater = ListDelegateField(OperatorMapper)
+
 
 class ListResponseMapper(Mapper):
     result = ListDelegateField(ResponseMapper)
