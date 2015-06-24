@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from config.settings import APP_ROOT
 from config.settings import Config
 from flask import Flask
 from flask import make_response
+from flask import jsonify
 
 app = Flask(__name__)
 app.secret_key = Config['secret_key']
