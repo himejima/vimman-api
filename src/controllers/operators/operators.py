@@ -5,9 +5,8 @@ from flask import redirect
 from flask import request
 from flask import session
 from helpers.crossdomain import crossdomain
-from models.model import *
+from models.model import * # NOQA
 from datetime import datetime as dt
-from config.databases import *
 import json
 
 import logging
@@ -26,7 +25,6 @@ def create():
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
     req = json.loads(request.data)
     try:
-#        TODO: saltのセット方法 + パスワードを暗号化する
         operator = Operator(
             id=None,
             username=req['username'],
@@ -104,7 +102,6 @@ def update(operator_id):
         row.state = req['state']
         row.updated_at = tstr
         db_session.flush()
-#         なぜ必要？ 調査
         db_session.commit()
         result['id'] = row.id
         result['username'] = row.username
@@ -125,7 +122,7 @@ def delete(operator_id):
         db_session.commit()
         return '', 204
     except:
-        logging.error(request)
+        logging.erromur(request)
     return '', 404
 
 
