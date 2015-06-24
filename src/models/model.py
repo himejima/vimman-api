@@ -1,24 +1,27 @@
 # -*- coding: utf-8 -*-
-from sqlalchemy import *
-from sqlalchemy.orm import *
+from sqlalchemy import *  # NOQA
+from sqlalchemy.orm import *  # NOQA
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime as dt
-from mappers.mapper import *
-from config.databases import *
+from mappers.mapper import *  # NOQA
+from config.databases import *  # NOQA
 
-# create base
-db_string = "{type}://{user}:{passwd}@{host}:{port}/{db}".format(
-            type=db_config['type'],
-            user=db_config['user'],
-            passwd=db_config['passwd'],
-            host=db_config['host'],
-            port=db_config['port'],
-            db=db_config['db']
+db_string = '{type}://{user}:{passwd}@{host}:{port}/{db}'.format(
+    type=db_config['type'],
+    user=db_config['user'],
+    passwd=db_config['passwd'],
+    host=db_config['host'],
+    port=db_config['port'],
+    db=db_config['db']
 )
+
 engine = create_engine(db_string, echo=False, isolation_level='READ UNCOMMITTED')
-db_session = scoped_session(sessionmaker(autocommit=False,
-                            autoflush=False,
-                            bind=engine))
+db_session = scoped_session(sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine
+))
+
 Base = declarative_base()
 Base.query = db_session.query_property()
 
@@ -32,7 +35,6 @@ class Operator(Base):
     state = Column(Integer)
     created_at = Column(DateTime, default=dt.now)
     updated_at = Column(DateTime, default=dt.now)
-
     def __init__(self, id, username, password, salt, state, created_at, updated_at):
         self.id = id
         self.username = username
@@ -53,12 +55,16 @@ class Question(Base):
     created_at = Column(DateTime, default=dt.now)
     updated_at = Column(DateTime, default=dt.now)
     answers = relationship('Answer')
-    creator = relationship('Operator',
-            primaryjoin="Question.created_by==Operator.id",
-            foreign_keys="Operator.id")
-    updater = relationship('Operator',
-            primaryjoin="Question.updated_by==Operator.id",
-            foreign_keys="Operator.id")
+    creator = relationship(
+        'Operator',
+        primaryjoin='Question.created_by==Operator.id',
+        foreign_keys='Operator.id'
+    )
+    updater = relationship(
+        'Operator',
+        primaryjoin='Question.updated_by==Operator.id',
+        foreign_keys='Operator.id'
+    )
     def __init__(self, id, content, state, created_by, updated_by, created_at, updated_at):
         self.id = id
         self.content = content
@@ -79,12 +85,16 @@ class Answer(Base):
     updated_by = Column(String(50))
     created_at = Column(DateTime, default=dt.now)
     updated_at = Column(DateTime, default=dt.now)
-    creator = relationship('Operator',
-            primaryjoin="Answer.created_by==Operator.id",
-            foreign_keys="Operator.id")
-    updater = relationship('Operator',
-            primaryjoin="Answer.updated_by==Operator.id",
-            foreign_keys="Operator.id")
+    creator = relationship(
+        'Operator',
+        primaryjoin='Answer.created_by==Operator.id',
+        foreign_keys='Operator.id'
+    )
+    updater = relationship(
+        'Operator',
+        primaryjoin='Answer.updated_by==Operator.id',
+        foreign_keys='Operator.id'
+    )
     def __init__(self, id, question_id, content, state, created_by, updated_by, created_at, updated_at):
         self.id = id
         self.question_id = question_id
@@ -105,14 +115,16 @@ class Information(Base):
     updated_by = Column(String(50))
     created_at = Column(DateTime, default=dt.now)
     updated_at = Column(DateTime, default=dt.now)
-
-    creator = relationship('Operator',
-            primaryjoin="Information.created_by==Operator.id",
-            foreign_keys="Operator.id")
-    updater = relationship('Operator',
-            primaryjoin="Information.updated_by==Operator.id",
-            foreign_keys="Operator.id")
-
+    creator = relationship(
+        'Operator',
+        primaryjoin='Information.created_by==Operator.id',
+        foreign_keys='Operator.id'
+    )
+    updater = relationship(
+        'Operator',
+        primaryjoin='Information.updated_by==Operator.id',
+        foreign_keys='Operator.id'
+    )
     def __init__(self, id, content, state, created_by, updated_by, created_at, updated_at):
         self.id = id
         self.content = content
@@ -134,14 +146,16 @@ class Tweet(Base):
     updated_by = Column(String(50))
     created_at = Column(DateTime, default=dt.now)
     updated_at = Column(DateTime, default=dt.now)
-
-    creator = relationship('Operator',
-            primaryjoin="Tweet.created_by==Operator.id",
-            foreign_keys="Operator.id")
-    updater = relationship('Operator',
-            primaryjoin="Tweet.updated_by==Operator.id",
-            foreign_keys="Operator.id")
-
+    creator = relationship(
+        'Operator',
+        primaryjoin='Tweet.created_by==Operator.id',
+        foreign_keys='Operator.id'
+    )
+    updater = relationship(
+        'Operator',
+        primaryjoin='Tweet.updated_by==Operator.id',
+        foreign_keys='Operator.id'
+    )
     def __init__(self, id, type, tweet_id, content, post_url, created_by, updated_by, created_at, updated_at):
         self.id = id
         self.type = type
@@ -164,14 +178,16 @@ class Response(Base):
     updated_by = Column(String(50))
     created_at = Column(DateTime, default=dt.now)
     updated_at = Column(DateTime, default=dt.now)
-
-    creator = relationship('Operator',
-            primaryjoin="Response.created_by==Operator.id",
-            foreign_keys="Operator.id")
-    updater = relationship('Operator',
-            primaryjoin="Response.updated_by==Operator.id",
-            foreign_keys="Operator.id")
-
+    creator = relationship(
+        'Operator',
+        primaryjoin='Response.created_by==Operator.id',
+        foreign_keys='Operator.id'
+    )
+    updater = relationship(
+        'Operator',
+        primaryjoin='Response.updated_by==Operator.id',
+        foreign_keys='Operator.id'
+    )
     def __init__(self, id, type, content, state, created_by, updated_by, created_at, updated_at):
         self.id = id
         self.type = type
