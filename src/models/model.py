@@ -6,14 +6,7 @@ from datetime import datetime as dt
 from mappers.mapper import *  # NOQA
 from config.databases import *  # NOQA
 
-db_string = '{type}://{user}:{passwd}@{host}:{port}/{db}'.format(
-    type=db_config['type'],
-    user=db_config['user'],
-    passwd=db_config['passwd'],
-    host=db_config['host'],
-    port=db_config['port'],
-    db=db_config['db']
-)
+db_string = Config['DATABASE_URL']
 
 engine = create_engine(db_string, echo=False, isolation_level='READ UNCOMMITTED')
 db_session = scoped_session(sessionmaker(
