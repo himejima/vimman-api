@@ -3,7 +3,7 @@ from flask import Blueprint
 from flask import jsonify
 from flask import request
 from helpers.crossdomain import crossdomain
-from models.model import Tweet
+from models.model import * # NOQA
 from datetime import datetime as dt
 import json
 import logging
