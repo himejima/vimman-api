@@ -72,9 +72,9 @@ def read(tweet_id):
     try:
         tweet = (
             Tweet.query
-                .filter('id = :tweet_id')
-                .params(tweet_id=tweet_id)
-                .first()
+            .filter('id = :tweet_id')
+            .params(tweet_id=tweet_id)
+            .first()
         )
         tweet_dict = TweetMapper(tweet).as_dict()
         return jsonify(result=tweet_dict), 200

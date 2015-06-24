@@ -68,11 +68,11 @@ def index():
 def read(information_id):
     try:
         information = (
-                Information.query
-                .filter('id = :information_id')
-                .params(information_id=information_id)
-                .first()
-            )
+            Information.query
+            .filter('id = :information_id')
+            .params(information_id=information_id)
+            .first()
+        )
         information_dict = InformationMapper(information).as_dict()
         return jsonify(result=information_dict), 200
     except:
