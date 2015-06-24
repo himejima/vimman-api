@@ -2,11 +2,9 @@
 from flask import Blueprint
 from flask import jsonify
 from flask import request
-from flask import session
 from helpers.crossdomain import crossdomain
-from models.model import *
+from models.model import Tweet
 from datetime import datetime as dt
-from config.databases import *
 import json
 import logging
 LOG_FILENAME = 'example.log'
