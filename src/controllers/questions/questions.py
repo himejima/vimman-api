@@ -2,7 +2,6 @@
 from flask import Blueprint
 from flask import jsonify
 from flask import request
-from flask import session
 from helpers.crossdomain import crossdomain
 from models.model import *  # NOQA
 from datetime import datetime as dt
@@ -91,9 +90,9 @@ def show_question(question_id):
     try:
         question = (
             Question.query
-                .filter('id = :question_id')
-                .params(question_id=question_id)
-                .first()
+            .filter('id = :question_id')
+            .params(question_id=question_id)
+            .first()
         )
         question_dict = QuestionMapper(question).as_dict()
         return jsonify(result=question_dict), 200
