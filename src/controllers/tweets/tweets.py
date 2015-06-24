@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
-from flask import Blueprint, jsonify, request, session
-from helpers.crossdomain import *
+from flask import Blueprint
+from flask import jsonify
+from flask import request
+from flask import session
+from helpers.crossdomain import crossdomain
 from models.model import *
-
 from datetime import datetime as dt
 from config.databases import *
 import json
-
 import logging
 LOG_FILENAME = 'example.log'
 logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
 
 app = Blueprint(__name__, 'tweets')
+
 
 @app.route('/', methods=['POST'])
 @crossdomain(origin='*')
@@ -49,6 +51,7 @@ def create():
         logging.error(req)
     return '', 400
 
+
 @app.route('/', methods=['GET'])
 @crossdomain(origin='*')
 def index():
@@ -63,6 +66,7 @@ def index():
     except:
         logging.error(request)
     return '', 404
+
 
 @app.route('/<tweet_id>', methods=['GET'])
 @crossdomain(origin='*')
