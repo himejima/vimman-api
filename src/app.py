@@ -5,7 +5,7 @@ from flask import make_response
 from flask import jsonify
 
 app = Flask(__name__)
-app.secret_key = Config['secret_key']
+app.secret_key = Config['SECRET_KEY']
 app.config.from_object(__name__)
 app.config.from_envvar('FLASKR_SETTING', silent=True)
 

@@ -1,12 +1,12 @@
 *.swp
 *.swo
+*.log
 *~
 .*/
 .DS_Store
 Thumbs.db
 node_modules/
 *.pyc
-databases.py
 .env
 
 # coveralls

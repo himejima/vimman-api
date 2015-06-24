@@ -6,7 +6,6 @@ install:
   - pip install flake8
   - pip install coveralls
 before_script:
-  - cp src/config/databases.py.sample src/config/databases.py
   - mysql -u root < data/sql/mysql_createdb.sql
   - mysql -u root vimman < data/sql/mysql_schema.sql
 script:

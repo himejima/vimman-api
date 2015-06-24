@@ -4,7 +4,7 @@ from sqlalchemy.orm import *  # NOQA
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime as dt
 from mappers.mapper import *  # NOQA
-from config.databases import *  # NOQA
+from config.settings import Config
 
 db_string = Config['DATABASE_URL']
 
