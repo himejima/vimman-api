@@ -8,7 +8,7 @@ from datetime import datetime as dt
 import json
 import logging
 LOG_FILENAME = 'example.log'
-logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
+logging.basicConfig(filename=LOG_FILENAME, level=logging.DEBUG)
 
 app = Blueprint(__name__, 'tweets')
 
