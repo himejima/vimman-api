@@ -35,6 +35,7 @@ class Operator(Base):
     state = Column(Integer)
     created_at = Column(DateTime, default=dt.now)
     updated_at = Column(DateTime, default=dt.now)
+
     def __init__(self, id, username, password, salt, state, created_at, updated_at):
         self.id = id
         self.username = username
@@ -65,6 +66,7 @@ class Question(Base):
         primaryjoin='Question.updated_by==Operator.id',
         foreign_keys='Operator.id'
     )
+
     def __init__(self, id, content, state, created_by, updated_by, created_at, updated_at):
         self.id = id
         self.content = content
@@ -95,6 +97,7 @@ class Answer(Base):
         primaryjoin='Answer.updated_by==Operator.id',
         foreign_keys='Operator.id'
     )
+
     def __init__(self, id, question_id, content, state, created_by, updated_by, created_at, updated_at):
         self.id = id
         self.question_id = question_id
@@ -125,6 +128,7 @@ class Information(Base):
         primaryjoin='Information.updated_by==Operator.id',
         foreign_keys='Operator.id'
     )
+
     def __init__(self, id, content, state, created_by, updated_by, created_at, updated_at):
         self.id = id
         self.content = content
@@ -156,6 +160,7 @@ class Tweet(Base):
         primaryjoin='Tweet.updated_by==Operator.id',
         foreign_keys='Operator.id'
     )
+
     def __init__(self, id, type, tweet_id, content, post_url, created_by, updated_by, created_at, updated_at):
         self.id = id
         self.type = type
@@ -188,6 +193,7 @@ class Response(Base):
         primaryjoin='Response.updated_by==Operator.id',
         foreign_keys='Operator.id'
     )
+
     def __init__(self, id, type, content, state, created_by, updated_by, created_at, updated_at):
         self.id = id
         self.type = type
