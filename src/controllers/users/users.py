@@ -5,7 +5,7 @@ from flask import redirect
 from flask import request
 from flask import session
 from helpers.crossdomain import crossdomain
-from models.model import *
+from models.model import * # NOQA
 
 import logging
 LOG_FILENAME = 'example.log'
@@ -43,7 +43,6 @@ def logout():
     code = 200
     clear_session()
     return redirect('/#/login')
-#    return jsonify(status_code=code)
 
 
 def set_username(username):
@@ -59,11 +58,9 @@ def is_login():
 
 
 def user_check():
-#    logging.debug(is_login())
     if not is_login():
         logging.debug(is_login())
         abort(401)
-#        return redirect('/#/login')
 
 
 def clear_session():
