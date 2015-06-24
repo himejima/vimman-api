@@ -11,7 +11,7 @@ import logging
 LOG_FILENAME = 'example.log'
 logging.basicConfig(filename=LOG_FILENAME, level=logging.DEBUG)
 
-app = Blueprint(__name__, "users")
+app = Blueprint(__name__, 'users')
 
 
 # TODO ログイン方法 dbから検索して照合

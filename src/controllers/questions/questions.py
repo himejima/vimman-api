@@ -5,7 +5,6 @@ from flask import request
 from helpers.crossdomain import crossdomain
 from models.model import *  # NOQA
 from datetime import datetime as dt
-from config.databases import *  # NOQA
 import json
 import logging
 LOG_FILENAME = 'questions.log'
