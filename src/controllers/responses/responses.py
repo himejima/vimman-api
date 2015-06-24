@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
-from flask import Blueprint, jsonify, session, request
-from helpers.crossdomain import *
+from flask import Blueprint
+from flask import jsonify
+from flask import session
+from flask import request
+from helpers.crossdomain import crossdomain
 from models.model import *
-
 from datetime import datetime as dt
-
 import logging
 LOG_FILENAME = 'example.log'
 logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
 
 app = Blueprint(__name__, "responses")
+
 
 @app.route('/', methods=['POST'])
 @crossdomain(origin='*')
@@ -18,11 +20,9 @@ def add_response():
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
     req = request.form
-    # 下記 三項演算子で記述する
     creator_id = 0
     if session.get('user_id') is not None:
         creator_id = session.get('user_id')
-
     try:
         response = Response(
             id=None,
@@ -40,8 +40,8 @@ def add_response():
         pass
     finally:
         pass
-
     return jsonify(status_code=code)
+
 
 @app.route('/', methods=['GET'])
 @crossdomain(origin='*')
@@ -57,6 +57,7 @@ def index_responses():
 
     return jsonify(status_code=code, result=result)
 
+
 @app.route('/<response_id>', methods=['GET'])
 @crossdomain(origin='*')
 def show_response(response_id):
@@ -71,11 +72,13 @@ def show_response(response_id):
 
     return jsonify(status_code=code, result=response_dict)
 
+
 def get_response(response_id):
     response = []
     response = Response.query.filter("id = :response_id").params(response_id=response_id).first()
 
     return response
+
 
 def get_responses():
     responses = []
@@ -84,6 +87,7 @@ def get_responses():
         responses.append(row)
 
     return responses
+
 
 @app.route('/<response_id>', methods=['PUT'])
 #@app.route('/<response_id>', methods=['POST'])
@@ -115,6 +119,7 @@ def edit_response(response_id):
         pass
 
     return jsonify(status_code=code)
+
 
 @app.route('/<response_id>', methods=['DELETE'])
 @crossdomain(origin='*')
