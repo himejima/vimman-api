@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Blueprint,
+from flask import Blueprint
 from flask import jsonify
 from flask import request
 from flask import session
@@ -28,7 +28,7 @@ def create():
         return jsonify(message='error'), 400
     tdatetime = dt.now()
     created_at = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    created_by = 0 # TODO: created user
+    created_by = 0  # TODO: created user
     req = json.loads(request.data)
     try:
         db_session.begin(subtransactions=True)
@@ -90,11 +90,11 @@ def index_questions():
 def show_question(question_id):
     try:
         question = (
-                Question.query
+            Question.query
                 .filter('id = :question_id')
                 .params(question_id=question_id)
                 .first()
-            )
+        )
         question_dict = QuestionMapper(question).as_dict()
         return jsonify(result=question_dict), 200
     except:
@@ -110,7 +110,7 @@ def edit_question(question_id):
         return jsonify(message='error'), 400
     tdatetime = dt.now()
     updated_at = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    updated_by = 0 # TODO: updated user
+    updated_by = 0  # TODO: updated user
     req = json.loads(request.data)
     try:
         db_session.begin(subtransactions=True)
@@ -128,14 +128,14 @@ def edit_question(question_id):
         db_session.commit()
         for answer_text in answer_texts:
             answer = Answer(
-                    id=None,
-                    question_id=question_id,
-                    content=answer_text,
-                    state=1,
-                    created_by=updated_by,
-                    updated_by=updated_by,
-                    created_at=updated_at,
-                    updated_at=updated_at
+                id=None,
+                question_id=question_id,
+                content=answer_text,
+                state=1,
+                created_by=updated_by,
+                updated_by=updated_by,
+                created_at=updated_at,
+                updated_at=updated_at
             )
             db_session.add(answer)
         db_session.flush()
