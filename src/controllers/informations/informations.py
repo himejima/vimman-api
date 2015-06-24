@@ -62,32 +62,56 @@ def index():
     param_cursor = request.args.get('cursor', 0)
     param_query = request.args.get('q', '')
 
-    # TODO: parameterがあるときに変更する
+    # TODO: parameterの型チェック
 
     try:
         informations = []
-        res = (
-                Information.query
-                .filter(Information.id == param_id)
-                .filter(Information.content.like('%' + param_query + '%'))
-                .order_by(Information.id.desc())
-                .limit(per_page)
-                .all()
-            )
-        #res = (base_query.all())
+        # memo queryの順番
+        base_query = Information.query
+        if param_id != '':
+            base_query = base_query.filter(Information.id == param_id)
+
+        if param_query != '':
+            base_query = base_query.filter(Information.content.like('%' + param_query + '%'))
+
+        # TODO ページがあるかどうかの指定が必要かも
+        param_cursor = int(param_cursor)
+        if param_cursor > 0:
+            logging.error('plus')
+            base_query = base_query.filter(Information.id > param_cursor)
+        elif param_cursor < 0:
+            logging.error('minus')
+            base_query = base_query.filter(Information.id < ((-1) * param_cursor))
+
+        base_query = base_query.order_by(Information.id.desc()).limit(per_page)
+
+        logging.error(base_query)
+
+        #res = (
+        #        Information.query
+        #        .filter(Information.id == param_id)
+        #        .filter(Information.content.like('%' + param_query + '%'))
+        #        .order_by(Information.id.desc())
+        #        .limit(per_page)
+        #        .all()
+        #    )
+        res = (base_query.all())
 
         for row in res:
             informations.append(row)
         informations_dict = ListInformationMapper({'result': informations}).as_dict()
         result = informations_dict['result']
 
-        ## 空でなければ
+        ## cursorの生成 
         #logging.info(result[-1]['id'])
-        #prev_cursor = (-1) * result[-1]['id']
-        #next_cursor = result[0]['id']
+        prev_cursor = 0
+        next_cursor = 0
 
-        #cursor = { 'prev' : prev_cursor, 'next' : next_cursor }
-        cursor=9
+        if len(result) > 0:
+            prev_cursor = (-1) * result[-1]['id']
+            next_cursor = result[0]['id']
+
+        cursor = { 'prev' : prev_cursor, 'next' : next_cursor }
         
         return jsonify(result=result, cursor=cursor), 200
     except:
