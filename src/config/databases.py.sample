@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 
 db_config = {
     'type': 'mysql',
@@ -8,4 +9,8 @@ db_config = {
     'passwd': '',
     'port': 3306,
     'unix_socket': '/var/lib/mysql/mysql.sock'
+}
+
+Config = {
+    'DATABASE_URL': os.environ.get('DATABASE_URL')
 }
