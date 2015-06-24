@@ -21,7 +21,7 @@ def create():
         return jsonify(message='error'), 400
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    created_by = 0 # TODO: created user
+    created_by = 0  # TODO: created user
     req = json.loads(request.data)
     try:
         information = Information(
