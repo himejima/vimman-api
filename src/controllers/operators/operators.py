@@ -120,7 +120,7 @@ def delete(operator_id):
         db_session.commit()
         return '', 204
     except:
-        logging.erromur(request)
+        logging.error(request)
     return '', 404
 
 
