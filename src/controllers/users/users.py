@@ -19,23 +19,19 @@ app = Blueprint(__name__, "users")
 @app.route('/login', methods=['GET', 'POST'])
 @crossdomain(origin='*')
 def login():
-    code = 200
-    error = None
     if request.method == 'POST':
         if request.form['username'] == 'test' and request.form['password'] == 'pass':
             set_username(request.form['username'])
             session['user_id'] = 1
             return redirect('/#/questions')
         else:
-            error = 'wrong'
             return redirect('/#/login')
-    return jsonify(status_code=code)
+    return jsonify(status_code=200)
 
 
 @app.route('/logout', methods=['GET'])
 @crossdomain(origin='*')
 def logout():
-    code = 200
     clear_session()
     return redirect('/#/login')
 
