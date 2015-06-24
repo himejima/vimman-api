@@ -4,7 +4,7 @@ from flask import jsonify
 from flask import request
 from flask import session
 from helpers.crossdomain import crossdomain
-from models.model import * # NOQA
+from models.model import *  # NOQA
 from datetime import datetime as dt
 import json
 
