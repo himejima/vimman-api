@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from bpmappers import DelegateField
 from bpmappers import ListDelegateField
 from bpmappers import Mapper
 from bpmappers import RawField
@@ -48,7 +47,6 @@ class QuestionMapper(Mapper):
 
 
 class ListQuestionMapper(Mapper):
-#    question_list = ListDelegateField(QuestionMapper)
     result = ListDelegateField(QuestionMapper)
 
 
