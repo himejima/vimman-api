@@ -4,9 +4,9 @@ from flask import jsonify
 from flask import request
 from flask import session
 from helpers.crossdomain import crossdomain
-from models.model import *
+from models.model import *  # NOQA
 from datetime import datetime as dt
-from config.databases import *
+from config.databases import *  # NOQA
 import json
 import logging
 LOG_FILENAME = 'questions.log'
@@ -119,7 +119,6 @@ def edit_question(question_id):
         question.state = req['state']
         question.updated_by = updated_by
         question.updated_at = updated_at
-        # Answers
         answer_texts = req['answers'].split('\r\n')
         res_answers = Answer.query.filter(Answer.question_id == question_id).all()
         for res_answer in res_answers:
@@ -149,6 +148,7 @@ def edit_question(question_id):
         logging.error(req)
         db_session.rollback()
     return '', 400
+
 
 @app.route('/<question_id>', methods=['DELETE'])
 @crossdomain(origin='*')
