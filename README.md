@@ -24,7 +24,7 @@
 
 |Name|Description|
 |:-|:-|
-|DATABASE_URL|Database URL to connection|
+|DATABASE\_URL|Database URL to connection|
 |xxxx|xxx|
 
 
