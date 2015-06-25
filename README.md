@@ -20,15 +20,12 @@
 3) Access to `localhost:5000`. ex) `localhost:5000/questions`
 
 
-## Configurations
-
-Environment Variables
+## Environment Variables
 
 |Name|Description|
 |:-|:-|
 |DATABASE_URL|Database URL to connection|
 |xxxx|xxx|
-
 
 
 ## Chatroom
