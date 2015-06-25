@@ -20,7 +20,16 @@
 3) Access to `localhost:5000`. ex) `localhost:5000/questions`
 
 
-## Contact Us
+## Configurations
+
+Environment Variables
+
+| Name | Description |
+|:-|:-|
+| DATABASE_URL | Database URL to connection |
+
+
+## Chatroom
 
 [![Join the chat at https://gitter.im/OMOSAN/vimman-api](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/OMOSAN/vimman-api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
