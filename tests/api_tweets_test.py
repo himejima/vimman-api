@@ -1,6 +1,11 @@
-import sys, os, json, unittest, urllib
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/../../src/api/')
+# -*- coding: utf-8 -*-
+import json
+import os
+import sys
+import unittest
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/../src/')
 import app
+
 
 class ApiTweetsTestCase(unittest.TestCase):
     def setUp(self):
@@ -9,10 +14,10 @@ class ApiTweetsTestCase(unittest.TestCase):
 
     def test_create(self):
         content_body = {
-            'type' : 'response',
-            'tweet_id' : '1',
-            'content' : 'tweet content',
-            'post_url' : 'http://www.yahoo.co.jp/'
+            'type': 'response',
+            'tweet_id': '1',
+            'content': 'tweet content',
+            'post_url': 'http://www.yahoo.co.jp/'
         }
         raw_response = self.app.post(
             '/tweets/',
@@ -29,9 +34,9 @@ class ApiTweetsTestCase(unittest.TestCase):
 
     def test_invalid_create(self):
         content_body = {
-            'type' : 'question',
-            'tweet_id' : '2',
-            'content' : 'tweet content invalid',
+            'type': 'question',
+            'tweet_id': '2',
+            'content': 'tweet content invalid',
         }
         raw_response = self.app.post(
             '/tweets/',
@@ -54,10 +59,10 @@ class ApiTweetsTestCase(unittest.TestCase):
 
     def test_read(self):
         content_body = {
-            'type' : 'response',
-            'tweet_id' : '3',
-            'content' : 'tweet content3',
-            'post_url' : 'http://www.yahoo.co.jp/'
+            'type': 'response',
+            'tweet_id': '3',
+            'content': 'tweet content3',
+            'post_url': 'http://www.yahoo.co.jp/'
         }
         raw_response = self.app.post(
             '/tweets/',
@@ -81,5 +86,8 @@ class ApiTweetsTestCase(unittest.TestCase):
         )
         assert raw_response.status_code == 404
 
-if __name__ == '__main__':
-    unittest.main()
+
+def suite():
+    suite = unittest.TestSuite()
+    suite.addTests(unittest.makeSuite(ApiTweetsTestCase))
+    return suite
