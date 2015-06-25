@@ -22,10 +22,10 @@
 
 ## Environment Variables
 
-|Name|Description|
-|:-|:-|
-|DATABASE\_URL|Database URL to connection|
-|xxxx|xxx|
+| Name | Description |
+|:-----|:------------|
+| DATABASE_URL | Database URL to connection |
+| xxxx | xxx |
 
 
 ## Chatroom
