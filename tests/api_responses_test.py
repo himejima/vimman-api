@@ -1,6 +1,11 @@
-import sys, os, json, unittest, urllib
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/../../src/api/')
+# -*- coding: utf-8 -*-
+import json
+import os
+import sys
+import unittest
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/../src/')
 import app
+
 
 class ApiResponsesTestCase(unittest.TestCase):
     def setUp(self):
@@ -9,9 +14,9 @@ class ApiResponsesTestCase(unittest.TestCase):
 
     def test_create(self):
         content_body = {
-            'type' : 'ok',
-            'content' : 'responses content',
-            'state'    : '1'
+            'type': 'ok',
+            'content': 'responses content',
+            'state': '1'
         }
         raw_response = self.app.post(
             '/responses/',
@@ -28,8 +33,8 @@ class ApiResponsesTestCase(unittest.TestCase):
 
     def test_invalid_create(self):
         content_body = {
-            'type' : 'ng',
-            'content' : 'responses content ng',
+            'type': 'ng',
+            'content': 'responses content ng',
         }
         raw_response = self.app.post(
             '/responses/',
@@ -52,9 +57,9 @@ class ApiResponsesTestCase(unittest.TestCase):
 
     def test_read(self):
         content_body = {
-            'type' : 'ng',
-            'content' : 'response',
-            'state'    : '1'
+            'type': 'ng',
+            'content': 'response',
+            'state': '1'
         }
         raw_response = self.app.post(
             '/responses/',
@@ -80,9 +85,9 @@ class ApiResponsesTestCase(unittest.TestCase):
 
     def test_update(self):
         content_body = {
-            'type' : 'ng',
-            'content' : 'response-3',
-            'state'    : '1'
+            'type': 'ng',
+            'content': 'response-3',
+            'state': '1'
         }
         raw_response = self.app.post(
             '/responses/',
@@ -91,9 +96,9 @@ class ApiResponsesTestCase(unittest.TestCase):
         )
         created = json.loads(raw_response.data)
         content_body = {
-            'type' : 'ng',
-            'content' : 'response-33',
-            'state'    : '2'
+            'type': 'ng',
+            'content': 'response-33',
+            'state': '2'
         }
         raw_response = self.app.put(
             '/responses/%d' % created['result']['id'],
@@ -108,8 +113,8 @@ class ApiResponsesTestCase(unittest.TestCase):
 
     def test_unknown_update(self):
         content_body = {
-            'type' : 'ng',
-            'state'    : '2'
+            'type': 'ng',
+            'state': '2'
         }
         raw_response = self.app.put(
             '/responses/%d' % 1000000,
@@ -120,9 +125,9 @@ class ApiResponsesTestCase(unittest.TestCase):
 
     def test_delete(self):
         content_body = {
-            'type' : 'ng',
-            'content' : 'response-4',
-            'state'    : '1'
+            'type': 'ng',
+            'content': 'response-4',
+            'state': '1'
         }
         raw_response = self.app.post(
             '/responses/',
@@ -141,5 +146,8 @@ class ApiResponsesTestCase(unittest.TestCase):
         )
         assert raw_response.status_code == 404
 
-if __name__ == '__main__':
-    unittest.main()
+
+def suite():
+    suite = unittest.TestSuite()
+    suite.addTests(unittest.makeSuite(ApiResponsesTestCase))
+    return suite
