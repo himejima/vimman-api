@@ -119,8 +119,7 @@ def delete_response(response_id):
         db_session.delete(row)
         db_session.flush()
         db_session.commit()
+        return '', 204
     except:
-        pass
-    finally:
-        pass
-    return jsonify(status_code=code)
+        logging.error(request)
+    return '', 404
