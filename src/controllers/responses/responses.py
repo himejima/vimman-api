@@ -60,14 +60,18 @@ def index_responses():
 @app.route('/<response_id>', methods=['GET'])
 @crossdomain(origin='*')
 def show_response(response_id):
-    code = 200
-    response_dict = {}
     try:
-        response = get_response(response_id)
+        response = (
+            Response.query
+            .filter('id = :response_id')
+            .params(response_id=response_id)
+            .first()
+        )
         response_dict = ResponseMapper(response).as_dict()
+        return jsonify(result=information_dict), 200
     except:
-        pass
-    return jsonify(status_code=code, result=response_dict)
+        logging.error(request)
+    return '', 404
 
 
 def get_response(response_id):
@@ -86,33 +90,36 @@ def get_responses():
 
 @app.route('/<response_id>', methods=['PUT'])
 @crossdomain(origin='*')
-def edit_response(response_id):
-    code = 201
+def update(response_id):
+    if request.headers['Content-Type'] != 'application/json':
+        return jsonify(message='error'), 400
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    req = request.form
-    updater_id = 0
-    if session.get('user_id') is not None:
-        updater_id = session.get('user_id')
+    req = json.loads(request.data)
+    updated_by = 0
     try:
         row = db_session.query(Response).get(response_id)
-        row.type = req['responses[type]']
-        row.content = req['responses[content]']
-        row.state = req['responses[state]']
-        row.updated_by = updater_id
+        row.type = req['type']
+        row.content = req['content']
+        row.state = req['state']
+        row.updated_by = updated_by
         row.updated_at = tstr
         db_session.flush()
         db_session.commit()
+        result = {}
+        result['id'] = row.id
+        result['type'] = row.type
+        result['state'] = row.state
+        result['content'] = row.content
+        return jsonify(result=result), 201
     except:
-        pass
-    finally:
-        pass
-    return jsonify(status_code=code)
+        logging.error(req)
+    return '', 404
 
 
 @app.route('/<response_id>', methods=['DELETE'])
 @crossdomain(origin='*')
-def delete_response(response_id):
+def delete(response_id):
     code = 204
     try:
         row = Response.query.get(response_id)
