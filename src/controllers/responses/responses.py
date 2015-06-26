@@ -46,20 +46,23 @@ def add_response():
 
 @app.route('/', methods=['GET'])
 @crossdomain(origin='*')
-def index_responses():
-    code = 200
+def index():
     try:
-        responses = get_responses()
+        responses = []
+        res = Question.query.all()
+        for row in res:
+            responses.append(row)
         responses_dict = ListResponseMapper({'result': responses}).as_dict()
+        result = responses_dict['result']
+        return jsonify(result=result), 200
     except:
-        pass
-    result = responses_dict['result']
-    return jsonify(status_code=code, result=result)
+        logging.error(request)
+    return '', 404
 
 
 @app.route('/<response_id>', methods=['GET'])
 @crossdomain(origin='*')
-def show_response(response_id):
+def read(response_id):
     try:
         response = (
             Response.query
@@ -68,24 +71,10 @@ def show_response(response_id):
             .first()
         )
         response_dict = ResponseMapper(response).as_dict()
-        return jsonify(result=information_dict), 200
+        return jsonify(result=response_dict), 200
     except:
         logging.error(request)
     return '', 404
-
-
-def get_response(response_id):
-    response = []
-    response = Response.query.filter('id = :response_id').params(response_id=response_id).first()
-    return response
-
-
-def get_responses():
-    responses = []
-    res = Response.query.all()
-    for row in res:
-        responses.append(row)
-    return responses
 
 
 @app.route('/<response_id>', methods=['PUT'])
