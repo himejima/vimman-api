@@ -27,7 +27,7 @@ def create():
         response = Response(
             id=None,
             type=req['type'],
-            content=req['content'],
+            content=req['content'].encode('utf-8'),
             state=req['state'],
             created_by=creator_by,
             updated_by=creator_by,
@@ -53,7 +53,7 @@ def create():
 def index():
     try:
         responses = []
-        res = Question.query.all()
+        res = Response.query.all()
         for row in res:
             responses.append(row)
         responses_dict = ListResponseMapper({'result': responses}).as_dict()
