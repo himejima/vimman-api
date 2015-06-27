@@ -28,7 +28,6 @@ def create():
             type=req['type'],
             tweet_id=req['tweet_id'],
             content=req['content'],
-            state=req['state'],
             post_url=req['post_url'],
             created_by=created_by,
             updated_by=created_by,
@@ -42,7 +41,7 @@ def create():
         result['id'] = tweet.id
         result['type'] = tweet.type
         result['tweet_id'] = tweet.tweet_id
-        result['state'] = tweet.state
+        result['post_url'] = tweet.post_url
         result['content'] = tweet.content
         return jsonify(result=result), 201
     except:
@@ -72,7 +71,7 @@ def read(tweet_id):
     try:
         tweet = (
             Tweet.query
-            .filter('id = :tweet_id')
+            .filter(text('id = :tweet_id'))
             .params(tweet_id=tweet_id)
             .first()
         )
