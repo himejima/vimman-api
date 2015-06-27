@@ -68,7 +68,7 @@ def read(information_id):
     try:
         information = (
             Information.query
-            .filter('id = :information_id')
+            .filter(text('id = :information_id'))
             .params(information_id=information_id)
             .first()
         )

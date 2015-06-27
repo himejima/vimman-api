@@ -72,7 +72,7 @@ def read(operator_id):
 
 def get_operator(operator_id):
     operator = None
-    operator = Operator.query.filter("id = :operator_id").params(operator_id=operator_id).first()
+    operator = Operator.query.filter(text("id = :operator_id")).params(operator_id=operator_id).first()
     return operator
 
 

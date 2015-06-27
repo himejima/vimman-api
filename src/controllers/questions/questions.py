@@ -89,7 +89,7 @@ def show_question(question_id):
     try:
         question = (
             Question.query
-            .filter('id = :question_id')
+            .filter(text('id = :question_id'))
             .params(question_id=question_id)
             .first()
         )
