@@ -112,7 +112,6 @@ def update(response_id):
 @app.route('/<response_id>', methods=['DELETE'])
 @crossdomain(origin='*')
 def delete(response_id):
-    code = 204
     try:
         row = Response.query.get(response_id)
         db_session.delete(row)
