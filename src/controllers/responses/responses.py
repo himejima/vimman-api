@@ -16,32 +16,36 @@ app = Blueprint(__name__, 'responses')
 
 @app.route('/', methods=['POST'])
 @crossdomain(origin='*')
-def add_response():
-    code = 201
+def create():
+    if request.headers['Content-Type'] != 'application/json':
+        return jsonify(message='error'), 400
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    req = request.form
-    creator_id = 0
-    if session.get('user_id') is not None:
-        creator_id = session.get('user_id')
+    created_by = 0  # TODO: created user
+    req = json.loads(request.data)
     try:
         response = Response(
             id=None,
-            type=req['responses[type]'],
-            content=req['responses[content]'],
-            state=req['responses[state]'],
-            created_by=creator_id,
-            updated_by=creator_id,
+            type=req['type'],
+            content=req['content'],
+            state=req['state'],
+            created_by=creator_by,
+            updated_by=creator_by,
             created_at=tstr,
             updated_at=tstr
         )
         db_session.add(response)
+        db_session.flush()
         db_session.commit()
+        result = {}
+        result['id'] = response.id
+        result['type'] = response.type
+        result['state'] = response.state
+        result['content'] = response.content
+        return jsonify(result=result), 201
     except:
-        pass
-    finally:
-        pass
-    return jsonify(status_code=code)
+        logging.error(req)
+    return '', 400
 
 
 @app.route('/', methods=['GET'])
