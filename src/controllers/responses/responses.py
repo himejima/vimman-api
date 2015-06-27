@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from flask import Blueprint
 from flask import jsonify
-from flask import session
 from flask import request
 from helpers.crossdomain import crossdomain
 from models.model import *  # NOQA
 from datetime import datetime as dt
+import json
 import logging
 LOG_FILENAME = 'example.log'
 logging.basicConfig(filename=LOG_FILENAME, level=logging.DEBUG)
@@ -26,10 +26,10 @@ def create():
         response = Response(
             id=None,
             type=req['type'],
-            content=req['content'].encode('utf-8'),
+            content=req['content'],
             state=req['state'],
-            created_by=creator_by,
-            updated_by=creator_by,
+            created_by=created_by,
+            updated_by=created_by,
             created_at=tstr,
             updated_at=tstr
         )
@@ -69,7 +69,7 @@ def read(response_id):
     try:
         response = (
             Response.query
-            .filter('id = :response_id')
+            .filter(text('id = :response_id'))
             .params(response_id=response_id)
             .first()
         )
