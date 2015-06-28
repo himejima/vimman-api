@@ -49,7 +49,6 @@ def create():
 @crossdomain(origin='*')
 def index():
     # per_pageとpageを取得
-    # TODO: 数字のみを検索するように修正する
     # per_page = request.args.get('per_page', 20)
     # page = request.args.get('page', 1)
     per_page = 20
@@ -78,7 +77,6 @@ def index():
         if param_query != '':
             base_query = base_query.filter(Information.content.like('%' + param_query + '%'))
 
-        # TODO ページがあるかどうかの指定が必要かも
         param_cursor = int(param_cursor)
         if param_cursor > 0:
             logging.error('plus')
@@ -112,9 +110,14 @@ def index():
         prev_cursor = 0
         next_cursor = 0
 
-        if len(result) > 0:
+        if len(result) == (per_page + 1):
             prev_cursor = (-1) * result[-1]['id']
             next_cursor = result[0]['id']
+        elif len(result) > 0:
+            if param_cursor > 0:
+                prev_cursor = (-1) * result[-1]['id']
+            elif param_cursor < 0:
+                next_cursor = result[0]['id']
 
         cursor = { 'prev' : prev_cursor, 'next' : next_cursor }
         
