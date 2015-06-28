@@ -58,11 +58,15 @@ def index():
     # logging.info(page)
     # logging.info(my_offset)
     param_id = request.args.get('id', '')
+    if isinstance(param_id, str) and not param_id.isdigit():
+        param_id = ''
+
     # 0ならばcursorが指定されていない
     param_cursor = request.args.get('cursor', 0)
-    param_query = request.args.get('q', '')
+    if isinstance(param_cursor, str) and not param_cursor.isdigit():
+        param_cursor = 0
 
-    # TODO: parameterの型チェック
+    param_query = request.args.get('q', '')
 
     try:
         informations = []
@@ -83,7 +87,7 @@ def index():
             logging.error('minus')
             base_query = base_query.filter(Information.id < ((-1) * param_cursor))
 
-        base_query = base_query.order_by(Information.id.desc()).limit(per_page)
+        base_query = base_query.order_by(Information.id.desc()).limit(per_page + 1)
 
         logging.error(base_query)
 
@@ -104,6 +108,7 @@ def index():
 
         ## cursorの生成 
         #logging.info(result[-1]['id'])
+        # 仕様メモ: prev_cursorが0ならば次は存在しない
         prev_cursor = 0
         next_cursor = 0
 
