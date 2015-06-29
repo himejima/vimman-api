@@ -6,6 +6,8 @@ TEST_TARGETS = [
     'api_informations_test',
     'api_operators_test',
     'api_questions_test',
+    'api_responses_test',
+    'api_tweets_test'
 ]
 
 
