@@ -42,6 +42,18 @@ class ApiOperatorsTestCase(unittest.TestCase):
         )
         assert raw_response.status_code == 400
 
+    def test_invalid_content_type_create(self):
+        content_body = {
+            'password': 'hogehoge',
+            'state': '2'
+        }
+        raw_response = self.app.post(
+            '/operators/',
+            content_type='text/html',
+            data=json.dumps(content_body)
+        )
+        assert raw_response.status_code == 400
+
     def test_index(self):
         raw_response = self.app.get(
             '/operators/'
@@ -120,6 +132,30 @@ class ApiOperatorsTestCase(unittest.TestCase):
             data=json.dumps(content_body)
         )
         assert raw_response.status_code == 404
+
+    def test_invalid_content_type_update(self):
+        content_body = {
+            'username': 'tester-33',
+            'password': 'hogehoge',
+            'state': '3'
+        }
+        raw_response = self.app.post(
+            '/operators/',
+            content_type='application/json',
+            data=json.dumps(content_body)
+        )
+        created = json.loads(raw_response.data)
+        content_body = {
+            'username': 'tester-34',
+            'password': 'hogehoge',
+            'state': '4'
+        }
+        raw_response = self.app.put(
+            '/operators/%d' % created['result']['id'],
+            content_type='text/html',
+            data=json.dumps(content_body)
+        )
+        assert raw_response.status_code == 400
 
     def test_delete(self):
         content_body = {
