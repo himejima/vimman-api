@@ -45,6 +45,19 @@ class ApiTweetsTestCase(unittest.TestCase):
         )
         assert raw_response.status_code == 400
 
+    def test_invalid_content_type_create(self):
+        content_body = {
+            'type': 'question',
+            'tweet_id': '2',
+            'content': 'tweet content invalid',
+        }
+        raw_response = self.app.post(
+            '/tweets/',
+            content_type='text/html',
+            data=json.dumps(content_body)
+        )
+        assert raw_response.status_code == 400
+
     def test_index(self):
         raw_response = self.app.get(
             '/tweets/'
