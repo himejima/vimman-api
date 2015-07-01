@@ -40,6 +40,17 @@ class ApiInformationsTestCase(unittest.TestCase):
         )
         assert raw_response.status_code == 400
 
+    def test_invalid_content_type_create(self):
+        content_body = {
+            'state': '2'
+        }
+        raw_response = self.app.post(
+            '/informations/',
+            content_type='text/html',
+            data=json.dumps(content_body)
+        )
+        assert raw_response.status_code == 400
+
     def test_index(self):
         raw_response = self.app.get(
             '/informations/'
