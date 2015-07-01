@@ -114,6 +114,28 @@ class ApiInformationsTestCase(unittest.TestCase):
         assert response['result']['state'] == 3
         assert response['result']['content'] == 'content-33'
 
+    def test_invalid_content_type_update(self):
+        content_body = {
+            'content': 'content-3',
+            'state': '2'
+        }
+        raw_response = self.app.post(
+            '/informations/',
+            content_type='application/json',
+            data=json.dumps(content_body)
+        )
+        created = json.loads(raw_response.data)
+        content_body = {
+            'content': 'anything',
+            'state': '3'
+        }
+        raw_response = self.app.put(
+            '/informations/%d' % created.id,
+            content_type='text/html',
+            data=json.dumps(content_body)
+        )
+        assert raw_response.status_code == 400
+
     def test_unknown_update(self):
         content_body = {
             'content': 'anything',
