@@ -116,7 +116,7 @@ class ApiInformationsTestCase(unittest.TestCase):
 
     def test_invalid_content_type_update(self):
         content_body = {
-            'content': 'content-3',
+            'content': 'content-34',
             'state': '2'
         }
         raw_response = self.app.post(
@@ -126,11 +126,11 @@ class ApiInformationsTestCase(unittest.TestCase):
         )
         created = json.loads(raw_response.data)
         content_body = {
-            'content': 'anything',
+            'content': 'content-44',
             'state': '3'
         }
         raw_response = self.app.put(
-            '/informations/%d' % created.id,
+            '/informations/%d' % created['result']['id'],
             content_type='text/html',
             data=json.dumps(content_body)
         )
