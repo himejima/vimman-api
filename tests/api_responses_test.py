@@ -43,6 +43,18 @@ class ApiResponsesTestCase(unittest.TestCase):
         )
         assert raw_response.status_code == 400
 
+    def test_invalid_content_type_create(self):
+        content_body = {
+            'type': 'ng',
+            'content': 'responses content ng',
+        }
+        raw_response = self.app.post(
+            '/responses/',
+            content_type='text/html',
+            data=json.dumps(content_body)
+        )
+        assert raw_response.status_code == 400
+
     def test_index(self):
         raw_response = self.app.get(
             '/responses/'
@@ -122,6 +134,30 @@ class ApiResponsesTestCase(unittest.TestCase):
             data=json.dumps(content_body)
         )
         assert raw_response.status_code == 404
+
+    def test_invalid_content_type_update(self):
+        content_body = {
+            'type': 'ng',
+            'content': 'response-33',
+            'state': '1'
+        }
+        raw_response = self.app.post(
+            '/responses/',
+            content_type='application/json',
+            data=json.dumps(content_body)
+        )
+        created = json.loads(raw_response.data)
+        content_body = {
+            'type': 'ng',
+            'content': 'response-34',
+            'state': '2'
+        }
+        raw_response = self.app.put(
+            '/responses/%d' % created['result']['id'],
+            content_type='text/html',
+            data=json.dumps(content_body)
+        )
+        assert raw_response.status_code == 400
 
     def test_delete(self):
         content_body = {
