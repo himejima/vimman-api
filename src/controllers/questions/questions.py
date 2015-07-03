@@ -68,6 +68,7 @@ def create():
         result['content'] = question.content
         return jsonify(result=result), 201
     except:
+        print db_session.error
         db_session.rollback()
         logging.error(req)
     return '', 400
