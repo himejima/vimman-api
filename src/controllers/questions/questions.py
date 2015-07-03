@@ -28,7 +28,9 @@ def create():
     created_at = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
     created_by = 0  # TODO: created user
     print 'api.01'
+    print request.data
     req = json.loads(request.data)
+    print 'api.01-1'
     try:
         db_session.begin(subtransactions=True)
         print 'api.02'
