@@ -30,16 +30,17 @@ class ApiQuestionsTestCase(unittest.TestCase):
         assert response['result']['state'] == '2'  # FIXME: 文字列比較でないと一致しない問題を解消すること
 
 #    # FIXME: 動作しない問題を解消すること
-#    def test_invalid_create(self):
-#        content_body = {
-#            'state': '2'
-#        }
-#        raw_response = self.app.post(
-#            '/questions/',
-#            content_type='application/json',
-#            data=json.dumps(content_body)
-#        )
-#        assert raw_response.status_code == 400
+    def test_invalid_create(self):
+        content_body = {
+            'state': '2'
+        }
+        raw_response = self.app.post(
+            '/questions/',
+            content_type='application/json',
+            data=json.dumps(content_body)
+        )
+        print raw_response
+        assert raw_response.status_code == 400
 
     def test_invalid_content_type_create(self):
         content_body = {
