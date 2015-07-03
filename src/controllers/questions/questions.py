@@ -32,6 +32,7 @@ def create():
     req = json.loads(request.data)
     print 'api.01-1'
     try:
+        print 'api.01-2'
         db_session.begin(subtransactions=True)
         print 'api.02'
         question = Question(
@@ -67,8 +68,8 @@ def create():
         result['content'] = question.content
         return jsonify(result=result), 201
     except:
-        logging.error(req)
         db_session.rollback()
+        logging.error(req)
     return '', 400
 
 
