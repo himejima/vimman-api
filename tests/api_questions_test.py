@@ -39,7 +39,6 @@ class ApiQuestionsTestCase(unittest.TestCase):
             content_type='application/json',
             data=json.dumps(content_body)
         )
-        print raw_response.status_code
         assert raw_response.status_code == 400
 
     def test_invalid_content_type_create(self):
@@ -70,6 +69,7 @@ class ApiQuestionsTestCase(unittest.TestCase):
             'answers': 'answer-1',
             'state': '1'
         }
+        print 'question.test_read\n'
         raw_response = self.app.post(
             '/questions/',
             content_type='application/json',
