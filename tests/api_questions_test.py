@@ -32,7 +32,7 @@ class ApiQuestionsTestCase(unittest.TestCase):
 #    # FIXME: 動作しない問題を解消すること
     def test_invalid_create(self):
         content_body = {
-            'state': '2'
+            'content': 'hogehoge'
         }
         raw_response = self.app.post(
             '/questions/',
