@@ -27,9 +27,11 @@ def create():
     tdatetime = dt.now()
     created_at = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
     created_by = 0  # TODO: created user
+    print 'api.01'
     req = json.loads(request.data)
     try:
         db_session.begin(subtransactions=True)
+        print 'api.02'
         question = Question(
             id=None,
             content=req['content'].encode('utf-8'),
@@ -39,6 +41,7 @@ def create():
             created_at=created_at,
             updated_at=created_at
         )
+        print 'api.03'
         db_session.add(question)
         db_session.flush()
         answers = req['answers'].split('\r\n')
