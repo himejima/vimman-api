@@ -27,14 +27,9 @@ def create():
     tdatetime = dt.now()
     created_at = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
     created_by = 0  # TODO: created user
-    print 'api.01'
-    print request.data
     req = json.loads(request.data)
-    print 'api.01-1'
+    trans = db_session.begin()
     try:
-        print 'api.01-2'
-        db_session.begin(subtransactions=True)
-        print 'api.02'
         question = Question(
             id=None,
             content=req['content'].encode('utf-8'),
@@ -44,7 +39,6 @@ def create():
             created_at=created_at,
             updated_at=created_at
         )
-        print 'api.03'
         db_session.add(question)
         db_session.flush()
         answers = req['answers'].split('\r\n')
@@ -61,15 +55,14 @@ def create():
             )
             db_session.add(answer)
         db_session.flush()
-        db_session.commit()
+        trans.commit()
         result = {}
         result['id'] = question.id
         result['state'] = question.state
         result['content'] = question.content
         return jsonify(result=result), 201
     except:
-        print db_session.error
-        db_session.rollback()
+        trans.rollback()
         logging.error(req)
     return '', 400
 

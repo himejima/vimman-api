@@ -29,7 +29,6 @@ class ApiQuestionsTestCase(unittest.TestCase):
         assert response['result']['id'] != ''
         assert response['result']['state'] == '2'  # FIXME: 文字列比較でないと一致しない問題を解消すること
 
-#    # FIXME: 動作しない問題を解消すること
     def test_invalid_create(self):
         content_body = {
             'content': 'hogehoge'
