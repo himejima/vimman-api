@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 import sys
-from flask import Blueprint, jsonify, request, session
-from helpers.crossdomain import *
-from models.model import *
-
+from flask import Blueprint
+from flask import jsonify
+from flask import request
+from helpers.crossdomain import crossdomain
+from models.model import *  # NOQA
 from datetime import datetime as dt
-from config.databases import *
 import json
 
 import logging
@@ -14,6 +14,7 @@ logging.basicConfig(filename=LOG_FILENAME, level=logging.INFO)
 
 app = Blueprint(__name__, 'informations')
 
+
 @app.route('/', methods=['POST'])
 @crossdomain(origin='*')
 def create():
@@ -21,7 +22,7 @@ def create():
         return jsonify(message='error'), 400
     tdatetime = dt.now()
     tstr = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    created_by = 0 # TODO: created user
+    created_by = 0  # TODO: created user
     req = json.loads(request.data)
     try:
         information = Information(
@@ -44,6 +45,7 @@ def create():
     except:
         logging.error(req)
     return '', 400
+
 
 @app.route('/', methods=['GET'])
 @crossdomain(origin='*')
@@ -127,21 +129,23 @@ def index():
         logging.error(sys.exc_info()[0]);
     return '', 404
 
+
 @app.route('/<information_id>', methods=['GET'])
 @crossdomain(origin='*')
 def read(information_id):
     try:
         information = (
-                Information.query
-                .filter('id = :information_id')
-                .params(information_id=information_id)
-                .first()
-            )
+            Information.query
+            .filter(text('id = :information_id'))
+            .params(information_id=information_id)
+            .first()
+        )
         information_dict = InformationMapper(information).as_dict()
         return jsonify(result=information_dict), 200
     except:
         logging.error(request)
     return '', 404
+
 
 @app.route('/<information_id>', methods=['PUT'])
 @crossdomain(origin='*')
@@ -168,6 +172,7 @@ def update(information_id):
     except:
         logging.error(req)
     return '', 404
+
 
 @app.route('/<information_id>', methods=['DELETE'])
 @crossdomain(origin='*')

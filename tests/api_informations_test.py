@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
-import sys, os, json, unittest, urllib
+import json
+import os
+import sys
+import unittest
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/../src/')
 import app
+
 
 class ApiInformationsTestCase(unittest.TestCase):
     def setUp(self):
@@ -10,8 +14,8 @@ class ApiInformationsTestCase(unittest.TestCase):
 
     def test_create(self):
         content_body = {
-            'content'  : 'content-1',
-            'state'    : '2'
+            'content': 'content-1',
+            'state': '2'
         }
         raw_response = self.app.post(
             '/informations/',
@@ -27,11 +31,22 @@ class ApiInformationsTestCase(unittest.TestCase):
 
     def test_invalid_create(self):
         content_body = {
-            'state'    : '2'
+            'state': '2'
         }
         raw_response = self.app.post(
             '/informations/',
             content_type='application/json',
+            data=json.dumps(content_body)
+        )
+        assert raw_response.status_code == 400
+
+    def test_invalid_content_type_create(self):
+        content_body = {
+            'state': '2'
+        }
+        raw_response = self.app.post(
+            '/informations/',
+            content_type='text/html',
             data=json.dumps(content_body)
         )
         assert raw_response.status_code == 400
@@ -49,8 +64,8 @@ class ApiInformationsTestCase(unittest.TestCase):
 
     def test_read(self):
         content_body = {
-            'content'  : 'content-2',
-            'state'    : '1'
+            'content': 'content-2',
+            'state': '1'
         }
         raw_response = self.app.post(
             '/informations/',
@@ -75,8 +90,8 @@ class ApiInformationsTestCase(unittest.TestCase):
 
     def test_update(self):
         content_body = {
-            'content'  : 'content-3',
-            'state'    : '2'
+            'content': 'content-3',
+            'state': '2'
         }
         raw_response = self.app.post(
             '/informations/',
@@ -85,8 +100,8 @@ class ApiInformationsTestCase(unittest.TestCase):
         )
         created = json.loads(raw_response.data)
         content_body = {
-            'content'  : 'content-33',
-            'state'    : '3'
+            'content': 'content-33',
+            'state': '3'
         }
         raw_response = self.app.put(
             '/informations/%d' % created['result']['id'],
@@ -99,10 +114,32 @@ class ApiInformationsTestCase(unittest.TestCase):
         assert response['result']['state'] == 3
         assert response['result']['content'] == 'content-33'
 
+    def test_invalid_content_type_update(self):
+        content_body = {
+            'content': 'content-34',
+            'state': '2'
+        }
+        raw_response = self.app.post(
+            '/informations/',
+            content_type='application/json',
+            data=json.dumps(content_body)
+        )
+        created = json.loads(raw_response.data)
+        content_body = {
+            'content': 'content-44',
+            'state': '3'
+        }
+        raw_response = self.app.put(
+            '/informations/%d' % created['result']['id'],
+            content_type='text/html',
+            data=json.dumps(content_body)
+        )
+        assert raw_response.status_code == 400
+
     def test_unknown_update(self):
         content_body = {
-            'content'  : 'anything',
-            'state'    : '3'
+            'content': 'anything',
+            'state': '3'
         }
         raw_response = self.app.put(
             '/informations/%d' % 1000000,
@@ -113,8 +150,8 @@ class ApiInformationsTestCase(unittest.TestCase):
 
     def test_delete(self):
         content_body = {
-            'content'  : 'content-4',
-            'state'    : '3'
+            'content': 'content-4',
+            'state': '3'
         }
         raw_response = self.app.post(
             '/informations/',
@@ -133,5 +170,8 @@ class ApiInformationsTestCase(unittest.TestCase):
         )
         assert raw_response.status_code == 404
 
-if __name__ == '__main__':
-    unittest.main()
+
+def suite():
+    suite = unittest.TestSuite()
+    suite.addTests(unittest.makeSuite(ApiInformationsTestCase))
+    return suite

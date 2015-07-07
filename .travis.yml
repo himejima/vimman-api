@@ -1,17 +1,25 @@
 language: python
-
-php:
-  - 2.7
-
-before_script:
+python:
+  - 2.7.9
+install:
   - pip install -r requirements.txt
-  - cp src/config/databases.py.sample src/config/databases.py
+  - pip install flake8
+  - pip install coveralls
+before_script:
   - mysql -u root < data/sql/mysql_createdb.sql
   - mysql -u root vimman < data/sql/mysql_schema.sql
-
 script:
+  - flake8 . --exclude=__init__.py,run.py --max-line-length=120
   - python -m unittest discover -s tests/ -p '*_test.py'
-
+  - coverage run --source=src setup.py test
+after_success:
+  - coveralls
+deploy:
+  provider: heroku
+  app: vimman-api
+  api_key: $HEROKU_API_KEY
+  on:
+    repo: OMOSAN/vimman-api
 notifications:
   email:
     recipients: project.omosan+vimman-api@gmail.com

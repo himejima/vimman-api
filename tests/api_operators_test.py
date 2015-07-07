@@ -1,6 +1,11 @@
-import sys, os, json, unittest, urllib
+# -*- coding: utf-8 -*-
+import json
+import os
+import sys
+import unittest
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/../src/')
 import app
+
 
 class ApiOperatorsTestCase(unittest.TestCase):
     def setUp(self):
@@ -9,9 +14,9 @@ class ApiOperatorsTestCase(unittest.TestCase):
 
     def test_create(self):
         content_body = {
-            'username' : 'tester-1',
-            'password' : 'hogehoge',
-            'state'    : '2'
+            'username': 'tester-1',
+            'password': 'hogehoge',
+            'state': '2'
         }
         raw_response = self.app.post(
             '/operators/',
@@ -27,12 +32,24 @@ class ApiOperatorsTestCase(unittest.TestCase):
 
     def test_invalid_create(self):
         content_body = {
-            'password' : 'hogehoge',
-            'state'    : '2'
+            'password': 'hogehoge',
+            'state': '2'
         }
         raw_response = self.app.post(
             '/operators/',
             content_type='application/json',
+            data=json.dumps(content_body)
+        )
+        assert raw_response.status_code == 400
+
+    def test_invalid_content_type_create(self):
+        content_body = {
+            'password': 'hogehoge',
+            'state': '2'
+        }
+        raw_response = self.app.post(
+            '/operators/',
+            content_type='text/html',
             data=json.dumps(content_body)
         )
         assert raw_response.status_code == 400
@@ -50,9 +67,9 @@ class ApiOperatorsTestCase(unittest.TestCase):
 
     def test_read(self):
         content_body = {
-            'username' : 'tester-2',
-            'password' : 'hogehoge',
-            'state'    : '1'
+            'username': 'tester-2',
+            'password': 'hogehoge',
+            'state': '1'
         }
         raw_response = self.app.post(
             '/operators/',
@@ -77,9 +94,9 @@ class ApiOperatorsTestCase(unittest.TestCase):
 
     def test_update(self):
         content_body = {
-            'username' : 'tester-3',
-            'password' : 'hogehoge',
-            'state'    : '2'
+            'username': 'tester-3',
+            'password': 'hogehoge',
+            'state': '2'
         }
         raw_response = self.app.post(
             '/operators/',
@@ -88,9 +105,9 @@ class ApiOperatorsTestCase(unittest.TestCase):
         )
         created = json.loads(raw_response.data)
         content_body = {
-            'username' : 'tester-33',
-            'password' : 'hogehoge',
-            'state'    : '3'
+            'username': 'tester-33',
+            'password': 'hogehoge',
+            'state': '3'
         }
         raw_response = self.app.put(
             '/operators/%d' % created['result']['id'],
@@ -105,9 +122,9 @@ class ApiOperatorsTestCase(unittest.TestCase):
 
     def test_unknown_update(self):
         content_body = {
-            'username' : 'anything',
-            'password' : 'hogehoge',
-            'state'    : '3'
+            'username': 'anything',
+            'password': 'hogehoge',
+            'state': '3'
         }
         raw_response = self.app.put(
             '/operators/%d' % 1000000,
@@ -116,11 +133,35 @@ class ApiOperatorsTestCase(unittest.TestCase):
         )
         assert raw_response.status_code == 404
 
+    def test_invalid_content_type_update(self):
+        content_body = {
+            'username': 'tester-33',
+            'password': 'hogehoge',
+            'state': '3'
+        }
+        raw_response = self.app.post(
+            '/operators/',
+            content_type='application/json',
+            data=json.dumps(content_body)
+        )
+        created = json.loads(raw_response.data)
+        content_body = {
+            'username': 'tester-34',
+            'password': 'hogehoge',
+            'state': '4'
+        }
+        raw_response = self.app.put(
+            '/operators/%d' % created['result']['id'],
+            content_type='text/html',
+            data=json.dumps(content_body)
+        )
+        assert raw_response.status_code == 400
+
     def test_delete(self):
         content_body = {
-            'username' : 'tester-4',
-            'password' : 'hogehoge',
-            'state'    : '3'
+            'username': 'tester-4',
+            'password': 'hogehoge',
+            'state': '3'
         }
         raw_response = self.app.post(
             '/operators/',
@@ -139,5 +180,8 @@ class ApiOperatorsTestCase(unittest.TestCase):
         )
         assert raw_response.status_code == 404
 
-if __name__ == '__main__':
-    unittest.main()
+
+def suite():
+    suite = unittest.TestSuite()
+    suite.addTests(unittest.makeSuite(ApiOperatorsTestCase))
+    return suite

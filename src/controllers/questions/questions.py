@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
-from flask import Blueprint, jsonify, request, session
-from helpers.crossdomain import *
-from models.model import *
-
+from flask import Blueprint
+from flask import jsonify
+from flask import request
+from helpers.crossdomain import crossdomain
+from models.model import *  # NOQA
 from datetime import datetime as dt
-from config.databases import *
 import json
-
 import logging
 LOG_FILENAME = 'questions.log'
 logging.basicConfig(
@@ -18,6 +17,7 @@ logging.basicConfig(
 
 app = Blueprint(__name__, 'questions')
 
+
 # TODO: パラメータ不足時のエラー処理
 @app.route('/', methods=['POST'])
 @crossdomain(origin='*')
@@ -26,10 +26,10 @@ def create():
         return jsonify(message='error'), 400
     tdatetime = dt.now()
     created_at = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    created_by = 0 # TODO: created user
+    created_by = 0  # TODO: created user
     req = json.loads(request.data)
+    trans = db_session.begin()
     try:
-        db_session.begin(subtransactions=True)
         question = Question(
             id=None,
             content=req['content'].encode('utf-8'),
@@ -55,23 +55,21 @@ def create():
             )
             db_session.add(answer)
         db_session.flush()
-        db_session.commit()
+        trans.commit()
         result = {}
         result['id'] = question.id
         result['state'] = question.state
         result['content'] = question.content
         return jsonify(result=result), 201
     except:
+        trans.rollback()
         logging.error(req)
-        db_session.rollback()
     return '', 400
+
 
 @app.route('/', methods=['GET'])
 @crossdomain(origin='*')
 def index_questions():
-    # TODO: 公開時にコメントイン
-    #if request.headers['Api-Key'] != API_ACCESS_KEY:
-    #    abort(401)
     try:
         questions = []
         res = Question.query.all()
@@ -84,21 +82,23 @@ def index_questions():
         logging.error(request)
     return '', 404
 
+
 @app.route('/<question_id>', methods=['GET'])
 @crossdomain(origin='*')
 def show_question(question_id):
     try:
         question = (
-                Question.query
-                .filter('id = :question_id')
-                .params(question_id=question_id)
-                .first()
-            )
+            Question.query
+            .filter(text('id = :question_id'))
+            .params(question_id=question_id)
+            .first()
+        )
         question_dict = QuestionMapper(question).as_dict()
         return jsonify(result=question_dict), 200
     except:
         logging.error(request)
     return '', 404
+
 
 # TODO: パラメータ不足時のエラー処理
 @app.route('/<question_id>', methods=['PUT'])
@@ -108,7 +108,7 @@ def edit_question(question_id):
         return jsonify(message='error'), 400
     tdatetime = dt.now()
     updated_at = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-    updated_by = 0 # TODO: updated user
+    updated_by = 0  # TODO: updated user
     req = json.loads(request.data)
     try:
         db_session.begin(subtransactions=True)
@@ -117,7 +117,6 @@ def edit_question(question_id):
         question.state = req['state']
         question.updated_by = updated_by
         question.updated_at = updated_at
-        # Answers
         answer_texts = req['answers'].split('\r\n')
         res_answers = Answer.query.filter(Answer.question_id == question_id).all()
         for res_answer in res_answers:
@@ -126,14 +125,14 @@ def edit_question(question_id):
         db_session.commit()
         for answer_text in answer_texts:
             answer = Answer(
-                    id=None,
-                    question_id=question_id,
-                    content=answer_text,
-                    state=1,
-                    created_by=updated_by,
-                    updated_by=updated_by,
-                    created_at=updated_at,
-                    updated_at=updated_at
+                id=None,
+                question_id=question_id,
+                content=answer_text,
+                state=1,
+                created_by=updated_by,
+                updated_by=updated_by,
+                created_at=updated_at,
+                updated_at=updated_at
             )
             db_session.add(answer)
         db_session.flush()
@@ -147,6 +146,7 @@ def edit_question(question_id):
         logging.error(req)
         db_session.rollback()
     return '', 400
+
 
 @app.route('/<question_id>', methods=['DELETE'])
 @crossdomain(origin='*')

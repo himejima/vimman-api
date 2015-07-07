@@ -7,19 +7,19 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/../src/')
 import app
 
 
-class ApiQuestionsTestCase(unittest.TestCase):
+class ApiResponsesTestCase(unittest.TestCase):
     def setUp(self):
         app.app.debug = False
         self.app = app.app.test_client()
 
     def test_create(self):
         content_body = {
-            'content': 'question-1',
-            'answers': 'answer-1\r\nanswer-2',
-            'state': '2'
+            'type': 'ok',
+            'content': 'responses content',
+            'state': '1'
         }
         raw_response = self.app.post(
-            '/questions/',
+            '/responses/',
             content_type='application/json',
             data=json.dumps(content_body)
         )
@@ -27,14 +27,17 @@ class ApiQuestionsTestCase(unittest.TestCase):
         response = json.loads(raw_response.data)
         assert response['result'] != ''
         assert response['result']['id'] != ''
-        assert response['result']['state'] == '2'  # FIXME: 文字列比較でないと一致しない問題を解消すること
+        assert response['result']['type'] == 'ok'
+        assert response['result']['content'] == 'responses content'
+        assert response['result']['state'] == 1
 
     def test_invalid_create(self):
         content_body = {
-            'content': 'hogehoge'
+            'type': 'ng',
+            'content': 'responses content ng',
         }
         raw_response = self.app.post(
-            '/questions/',
+            '/responses/',
             content_type='application/json',
             data=json.dumps(content_body)
         )
@@ -42,10 +45,11 @@ class ApiQuestionsTestCase(unittest.TestCase):
 
     def test_invalid_content_type_create(self):
         content_body = {
-            'state': '3'
+            'type': 'ng',
+            'content': 'responses content ng',
         }
         raw_response = self.app.post(
-            '/questions/',
+            '/responses/',
             content_type='text/html',
             data=json.dumps(content_body)
         )
@@ -53,110 +57,133 @@ class ApiQuestionsTestCase(unittest.TestCase):
 
     def test_index(self):
         raw_response = self.app.get(
-            '/questions/'
+            '/responses/'
         )
         assert raw_response.status_code == 200
         response = json.loads(raw_response.data)
         assert response['result'] != ''
         assert response['result'][0]['id'] is not None
-        assert response['result'][0]['state'] is not None
+        assert response['result'][0]['type'] is not None
         assert response['result'][0]['content'] is not None
+        assert response['result'][0]['state'] is not None
 
     def test_read(self):
         content_body = {
-            'content': 'content-2',
-            'answers': 'answer-1',
+            'type': 'ng',
+            'content': 'response',
             'state': '1'
         }
-        print 'question.test_read\n'
         raw_response = self.app.post(
-            '/questions/',
+            '/responses/',
             content_type='application/json',
             data=json.dumps(content_body)
         )
-        print raw_response
         created = json.loads(raw_response.data)
         raw_response = self.app.get(
-            '/questions/%d' % created['result']['id']
+            '/responses/%d' % created['result']['id']
         )
         assert raw_response.status_code == 200
         response = json.loads(raw_response.data)
         assert response['result']['id'] == created['result']['id']
-#        assert response['result']['state'] == created['result']['state']  # FIXME: 一致しない問題を解消すること
+        assert response['result']['type'] == created['result']['type']
         assert response['result']['content'] == created['result']['content']
+        assert response['result']['state'] == created['result']['state']
 
     def test_unknown_read(self):
         raw_response = self.app.get(
-            '/questions/%d' % 1000000
+            '/tweets/%d' % 1000000
         )
         assert raw_response.status_code == 404
 
     def test_update(self):
         content_body = {
-            'content': 'question-3',
-            'answers': 'answer-3_1\r\nanswer-3_2',
-            'state': '2'
+            'type': 'ng',
+            'content': 'response-3',
+            'state': '1'
         }
         raw_response = self.app.post(
-            '/questions/',
+            '/responses/',
             content_type='application/json',
             data=json.dumps(content_body)
         )
         created = json.loads(raw_response.data)
         content_body = {
-            'content': 'question-33',
-            'answers': 'answer-33_1\r\nanswer-33_2',
-            'state': '3'
+            'type': 'ng',
+            'content': 'response-33',
+            'state': '2'
         }
         raw_response = self.app.put(
-            '/questions/%d' % created['result']['id'],
+            '/responses/%d' % created['result']['id'],
             content_type='application/json',
             data=json.dumps(content_body)
         )
         assert raw_response.status_code == 201
         response = json.loads(raw_response.data)
         assert response['result']['id'] == created['result']['id']
-        assert response['result']['state'] == 3
-        assert response['result']['content'] == 'question-33'
+        assert response['result']['content'] == 'response-33'
+        assert response['result']['state'] == 2
 
-#    def test_unknown_update(self):
-#        content_body = {
-#            'username' : 'anything',
-#            'password' : 'hogehoge',
-#            'state'    : '3'
-#        }
-#        raw_response = self.app.put(
-#            '/questions/%d' % 1000000,
-#            content_type='application/json',
-#            data=json.dumps(content_body)
-#        )
-#        assert raw_response.status_code == 404
+    def test_unknown_update(self):
+        content_body = {
+            'type': 'ng',
+            'state': '2'
+        }
+        raw_response = self.app.put(
+            '/responses/%d' % 1000000,
+            content_type='application/json',
+            data=json.dumps(content_body)
+        )
+        assert raw_response.status_code == 404
+
+    def test_invalid_content_type_update(self):
+        content_body = {
+            'type': 'ng',
+            'content': 'response-33',
+            'state': '1'
+        }
+        raw_response = self.app.post(
+            '/responses/',
+            content_type='application/json',
+            data=json.dumps(content_body)
+        )
+        created = json.loads(raw_response.data)
+        content_body = {
+            'type': 'ng',
+            'content': 'response-34',
+            'state': '2'
+        }
+        raw_response = self.app.put(
+            '/responses/%d' % created['result']['id'],
+            content_type='text/html',
+            data=json.dumps(content_body)
+        )
+        assert raw_response.status_code == 400
 
     def test_delete(self):
         content_body = {
-            'content': 'question-4',
-            'answers': 'answer-4_1\r\nanswer-4_2',
-            'state': '2'
+            'type': 'ng',
+            'content': 'response-4',
+            'state': '1'
         }
         raw_response = self.app.post(
-            '/questions/',
+            '/responses/',
             content_type='application/json',
             data=json.dumps(content_body)
         )
         created = json.loads(raw_response.data)
         raw_response = self.app.delete(
-            '/questions/%d' % created['result']['id']
+            '/responses/%d' % created['result']['id']
         )
         assert raw_response.status_code == 204
 
     def test_unknown_delete(self):
         raw_response = self.app.delete(
-            '/questions/%d' % 100000
+            '/responses/%d' % 100000
         )
         assert raw_response.status_code == 404
 
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTests(unittest.makeSuite(ApiQuestionsTestCase))
+    suite.addTests(unittest.makeSuite(ApiResponsesTestCase))
     return suite

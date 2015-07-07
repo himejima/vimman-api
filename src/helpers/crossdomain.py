@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-
 u""" Decorator for the HTTP Access Control
 see http://flask.pocoo.org/snippets/56/
 """
-
 from datetime import timedelta
-from flask import make_response, request, current_app
+from flask import current_app
+from flask import make_response
+from flask import request
 from functools import update_wrapper
+
 
 def crossdomain(origin=None, methods=None, headers=None,
                 max_age=21600, attach_to_all=True,
@@ -23,7 +24,6 @@ def crossdomain(origin=None, methods=None, headers=None,
     def get_methods():
         if methods is not None:
             return methods
-
         options_resp = current_app.make_default_options_response()
         return options_resp.headers['allow']
 
@@ -35,16 +35,13 @@ def crossdomain(origin=None, methods=None, headers=None,
                 resp = make_response(f(*args, **kwargs))
             if not attach_to_all and request.method != 'OPTIONS':
                 return resp
-
             h = resp.headers
-
             h['Access-Control-Allow-Origin'] = origin
             h['Access-Control-Allow-Methods'] = get_methods()
             h['Access-Control-Max-Age'] = str(max_age)
             if headers is not None:
                 h['Access-Control-Allow-Headers'] = headers
             return resp
-
         f.provide_automatic_options = False
         return update_wrapper(wrapped_function, f)
     return decorator

@@ -1,4 +1,6 @@
+gunicorn==19.3.0
 Flask==0.10.1
 MySQL-python==1.2.5
+psycopg2
 bpmappers==0.8
 SQLAlchemy==1.0.2
