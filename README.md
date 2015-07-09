@@ -27,6 +27,10 @@
 | DATABASE_URL | Database URL to connection. ex) `mysql://root:@localhost/vimman` |
 | SECRET_KEY | Secret key for application |
 
+    // .bash_profile
+    export DATABASE_URL="mysql://root:@localhost/vimman"
+    export SECRET_KEY="hogefugamogexxxxxxxxxxxxxx..."
+
 
 ## Chatroom
 
