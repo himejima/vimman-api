@@ -24,8 +24,8 @@
 
 | Name | Description |
 |:-----|:------------|
-| DATABASE_URL | Database URL to connection |
-| xxxx | xxx |
+| DATABASE_URL | Database URL to connection. ex) `mysql://root:@localhost/vimman` |
+| SECRET_KEY | Secret key for application |
 
 
 ## Chatroom
