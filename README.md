@@ -17,7 +17,8 @@
     $ cp src/config/databases.py.sample src/config/databases.py
     $ python src/app.py
 
-3) Access to `localhost:5000`. ex) `localhost:5000/questions`
+3) Access to `localhost:5000`.  
+ex) `localhost:5000/questions`
 
 
 ## Environment Variables
