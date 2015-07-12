@@ -51,13 +51,7 @@ def create():
 @crossdomain(origin='*')
 def index():
     # per_pageとpageを取得
-    # per_page = request.args.get('per_page', 20)
-    # page = request.args.get('page', 1)
     per_page = 20
-    # my_offset = (int(page) - 1) * int(per_page)
-    # logging.info(per_page)
-    # logging.info(page)
-    # logging.info(my_offset)
     param_id = request.args.get('id', '')
     if isinstance(param_id, str) and not param_id.isdigit():
         param_id = ''
@@ -81,15 +75,13 @@ def index():
 
         param_cursor = int(param_cursor)
         if param_cursor > 0:
-            logging.error('plus')
             base_query = base_query.filter(Information.id > param_cursor)
         elif param_cursor < 0:
-            logging.error('minus')
             base_query = base_query.filter(Information.id < ((-1) * param_cursor))
 
         base_query = base_query.order_by(Information.id.desc()).limit(per_page + 1)
 
-        logging.error(base_query)
+        # logging.error(base_query)
 
         #res = (
         #        Information.query
