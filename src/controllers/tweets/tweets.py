@@ -27,7 +27,7 @@ def create():
             id=None,
             type=req['type'],
             tweet_id=req['tweet_id'],
-            content=req['content'],
+            content=req['content'].encode('utf-8'),
             post_url=req['post_url'],
             created_by=created_by,
             updated_by=created_by,
@@ -63,6 +63,7 @@ def index():
         param_cursor = 0
 
     param_query = request.args.get('q', '')
+    param_query = param_query.encode('utf-8')
 
     try:
         tweets = []
