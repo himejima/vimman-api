@@ -26,7 +26,7 @@ def create():
         response = Response(
             id=None,
             type=req['type'],
-            content=req['content'],
+            content=req['content'].encode('utf-8'),
             state=req['state'],
             created_by=created_by,
             updated_by=created_by,
@@ -61,6 +61,7 @@ def index():
         param_cursor = 0
 
     param_query = request.args.get('q', '')
+    param_query = param_query.encode('utf-8')
 
     try:
         responses = []
@@ -74,9 +75,9 @@ def index():
 
         param_cursor = int(param_cursor)
         if param_cursor > 0:
-            base_query = base_query.filter(Response.id > param_cursor)
+            base_query = base_query.filter(Response.id >= param_cursor)
         elif param_cursor < 0:
-            base_query = base_query.filter(Response.id < ((-1) * param_cursor))
+            base_query = base_query.filter(Response.id <= ((-1) * param_cursor))
 
         base_query = base_query.order_by(Response.id.desc()).limit(per_page + 1)
         # res = Response.query.all()
