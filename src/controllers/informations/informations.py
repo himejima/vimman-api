@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import sys
 from flask import Blueprint
 from flask import jsonify
 from flask import request
@@ -62,6 +61,7 @@ def index():
         param_cursor = 0
 
     param_query = request.args.get('q', '')
+    param_query = param_query.encode('utf-8')
 
     try:
         informations = []
@@ -75,22 +75,14 @@ def index():
 
         param_cursor = int(param_cursor)
         if param_cursor > 0:
-            base_query = base_query.filter(Information.id > param_cursor)
+            base_query = base_query.filter(Information.id >= param_cursor)
         elif param_cursor < 0:
-            base_query = base_query.filter(Information.id < ((-1) * param_cursor))
+            base_query = base_query.filter(Information.id <= ((-1) * param_cursor))
 
         base_query = base_query.order_by(Information.id.desc()).limit(per_page + 1)
 
         # logging.error(base_query)
 
-        #res = (
-        #        Information.query
-        #        .filter(Information.id == param_id)
-        #        .filter(Information.content.like('%' + param_query + '%'))
-        #        .order_by(Information.id.desc())
-        #        .limit(per_page)
-        #        .all()
-        #    )
         res = (base_query.all())
 
         for row in res:
@@ -118,7 +110,6 @@ def index():
         return jsonify(result=result, cursor=cursor), 200
     except:
         logging.error(request)
-        logging.error(sys.exc_info()[0]);
     return '', 404
 
 
