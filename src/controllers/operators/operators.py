@@ -25,7 +25,7 @@ def create():
     try:
         operator = Operator(
             id=None,
-            username=req['username'],
+            username=req['username'].encode('utf-8'),
             password=req['password'],
             salt='salt1',
             state=req['state'],
@@ -58,6 +58,7 @@ def index():
         param_cursor = 0
 
     param_query = request.args.get('q', '')
+    param_query = param_query.encode('utf-8')
 
     try:
         #operators = get_operators()
@@ -67,13 +68,13 @@ def index():
             base_query = base_query.filter(Operator.id == param_id)
 
         if param_query != '':
-            base_query = base_query.filter(Operator.content.like('%' + param_query + '%'))
+            base_query = base_query.filter(Operator.username.like('%' + param_query + '%'))
 
         param_cursor = int(param_cursor)
         if param_cursor > 0:
-            base_query = base_query.filter(Operator.id > param_cursor)
+            base_query = base_query.filter(Operator.id >= param_cursor)
         elif param_cursor < 0:
-            base_query = base_query.filter(Operator.id < ((-1) * param_cursor))
+            base_query = base_query.filter(Operator.id <= ((-1) * param_cursor))
 
         base_query = base_query.order_by(Operator.id.desc()).limit(per_page + 1)
         res = (base_query.all())
