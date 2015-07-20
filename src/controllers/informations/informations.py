@@ -90,8 +90,8 @@ def index():
         informations_dict = ListInformationMapper({'result': informations}).as_dict()
         result = informations_dict['result']
 
-        ## cursorの生成 
-        #logging.info(result[-1]['id'])
+        # cursorの生成
+        # logging.info(result[-1]['id'])
         # 仕様メモ: prev_cursorが0ならば次は存在しない
         prev_cursor = 0
         next_cursor = 0
@@ -105,8 +105,8 @@ def index():
             elif param_cursor < 0:
                 next_cursor = result[0]['id']
 
-        cursor = { 'prev' : prev_cursor, 'next' : next_cursor }
-        
+        cursor = {'prev': prev_cursor, 'next': next_cursor}
+
         return jsonify(result=result, cursor=cursor), 200
     except:
         logging.error(request)

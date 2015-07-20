@@ -120,7 +120,7 @@ class ApiTweetsTestCase(unittest.TestCase):
         response = json.loads(raw_response.data)
         assert raw_response.status_code == 200
         assert len(response['result']) > 0
- 
+
         raw_response = self.app.get(
             '/tweets/?q=xxxxxxxx'
         )

@@ -61,7 +61,7 @@ def index():
     param_query = param_query.encode('utf-8')
 
     try:
-        #operators = get_operators()
+        # operators = get_operators()
         operators = []
         base_query = Operator.query
         if param_id != '':
@@ -79,7 +79,7 @@ def index():
         base_query = base_query.order_by(Operator.id.desc()).limit(per_page + 1)
         res = (base_query.all())
 
-        #res = Operator.query.all()
+        # res = Operator.query.all()
         for row in res:
             operators.append(row)
 
@@ -98,7 +98,7 @@ def index():
             elif param_cursor < 0:
                 next_cursor = result[0]['id']
 
-        cursor = { 'prev' : prev_cursor, 'next' : next_cursor }
+        cursor = {'prev': prev_cursor, 'next': next_cursor}
 
         return jsonify(result=result, cursor=cursor), 200
     except:
@@ -125,12 +125,12 @@ def get_operator(operator_id):
     return operator
 
 
-#def get_operators():
-#    operators = []
-#    res = Operator.query.all()
-#    for row in res:
-#        operators.append(row)
-#    return operators
+# def get_operators():
+#     operators = []
+#     res = Operator.query.all()
+#     for row in res:
+#         operators.append(row)
+#     return operators
 
 
 @app.route('/<operator_id>', methods=['PUT'])

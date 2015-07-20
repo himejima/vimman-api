@@ -103,7 +103,7 @@ def index():
             elif param_cursor < 0:
                 next_cursor = result[0]['id']
 
-        cursor = { 'prev' : prev_cursor, 'next' : next_cursor }
+        cursor = {'prev': prev_cursor, 'next': next_cursor}
 
         return jsonify(result=result, cursor=cursor), 200
     except:

@@ -100,7 +100,7 @@ def index_questions():
             base_query = base_query.filter(Question.id <= ((-1) * param_cursor))
 
         base_query = base_query.order_by(Question.id.desc()).limit(per_page + 1)
-        #res = Question.query.all()
+        # res = Question.query.all()
         res = (base_query.all())
 
         for row in res:
@@ -120,7 +120,7 @@ def index_questions():
             elif param_cursor < 0:
                 next_cursor = result[0]['id']
 
-        cursor = { 'prev' : prev_cursor, 'next' : next_cursor }
+        cursor = {'prev': prev_cursor, 'next': next_cursor}
 
         return jsonify(result=result, cursor=cursor), 200
     except:
