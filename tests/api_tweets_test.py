@@ -104,7 +104,7 @@ class ApiTweetsTestCase(unittest.TestCase):
         content_body = {
             'type': 'response',
             'tweet_id': '3',
-            'content': 'tweet contentあいえうお',
+            'content': 'tweet contentあいうえお',
             'post_url': 'http://www.yahoo.co.jp/'
         }
         raw_response = self.app.post(
