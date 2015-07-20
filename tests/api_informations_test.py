@@ -100,7 +100,7 @@ class ApiInformationsTestCase(unittest.TestCase):
         )
         created = json.loads(raw_response.data)
         content_body = {
-            'content': 'content-33',
+            'content': u'content-33',
             'state': '3'
         }
         raw_response = self.app.put(
@@ -169,6 +169,33 @@ class ApiInformationsTestCase(unittest.TestCase):
             '/informations/%d' % 100000
         )
         assert raw_response.status_code == 404
+
+    # TODO: データ依存のテストを追加
+    def test_index_filter(self):
+        content_body = {
+            'content': 'content-あいうえお',
+            'state': '1'
+        }
+        raw_response = self.app.post(
+            '/informations/',
+            content_type='application/json',
+            data=json.dumps(content_body)
+        )
+        assert raw_response.status_code == 201
+
+        raw_response = self.app.get(
+            '/informations/?q=あいう'
+        )
+        response = json.loads(raw_response.data)
+        assert raw_response.status_code == 200
+        assert len(response['result']) > 0
+
+        raw_response = self.app.get(
+            '/informations/?q=xxxxxxxx'
+        )
+        response = json.loads(raw_response.data)
+        assert raw_response.status_code == 200
+        assert len(response['result']) == 0
 
 
 def suite():

@@ -25,3 +25,6 @@ notifications:
     recipients: project.omosan+vimman-api@gmail.com
     on_success: always # [always|never|change]
     on_failure: always # [always|never|change]
+env:
+  global:
+    - DATABASE_URL="mysql://root:@localhost:3306/vimman?charset=utf8&use_unicode=1"

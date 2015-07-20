@@ -99,6 +99,35 @@ class ApiTweetsTestCase(unittest.TestCase):
         )
         assert raw_response.status_code == 404
 
+    # TODO: データ依存のテストを追加
+    def test_index_filter(self):
+        content_body = {
+            'type': 'response',
+            'tweet_id': '3',
+            'content': 'tweet contentあいうえお',
+            'post_url': 'http://www.yahoo.co.jp/'
+        }
+        raw_response = self.app.post(
+            '/tweets/',
+            content_type='application/json',
+            data=json.dumps(content_body)
+        )
+        assert raw_response.status_code == 201
+
+        raw_response = self.app.get(
+            '/tweets/?q=あいう'
+        )
+        response = json.loads(raw_response.data)
+        assert raw_response.status_code == 200
+        assert len(response['result']) > 0
+
+        raw_response = self.app.get(
+            '/tweets/?q=xxxxxxxx'
+        )
+        response = json.loads(raw_response.data)
+        assert raw_response.status_code == 200
+        assert len(response['result']) == 0
+
 
 def suite():
     suite = unittest.TestSuite()

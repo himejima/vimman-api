@@ -49,14 +49,65 @@ def create():
 @app.route('/', methods=['GET'])
 @crossdomain(origin='*')
 def index():
+    # per_pageとpageを取得
+    per_page = 20
+    param_id = request.args.get('id', '')
+    if isinstance(param_id, str) and not param_id.isdigit():
+        param_id = ''
+
+    # 0ならばcursorが指定されていない
+    param_cursor = request.args.get('cursor', 0)
+    if isinstance(param_cursor, str) and not param_cursor.isdigit():
+        param_cursor = 0
+
+    param_query = request.args.get('q', '')
+    param_query = param_query.encode('utf-8')
+
     try:
         informations = []
-        res = Information.query.all()
+        # memo queryの順番
+        base_query = Information.query
+        if param_id != '':
+            base_query = base_query.filter(Information.id == param_id)
+
+        if param_query != '':
+            base_query = base_query.filter(Information.content.like('%' + param_query + '%'))
+
+        param_cursor = int(param_cursor)
+        if param_cursor > 0:
+            base_query = base_query.filter(Information.id >= param_cursor)
+        elif param_cursor < 0:
+            base_query = base_query.filter(Information.id <= ((-1) * param_cursor))
+
+        base_query = base_query.order_by(Information.id.desc()).limit(per_page + 1)
+
+        # logging.error(base_query)
+
+        res = (base_query.all())
+
         for row in res:
             informations.append(row)
         informations_dict = ListInformationMapper({'result': informations}).as_dict()
         result = informations_dict['result']
-        return jsonify(result=result), 200
+
+        # cursorの生成
+        # logging.info(result[-1]['id'])
+        # 仕様メモ: prev_cursorが0ならば次は存在しない
+        prev_cursor = 0
+        next_cursor = 0
+
+        if len(result) == (per_page + 1):
+            prev_cursor = (-1) * result[-1]['id']
+            next_cursor = result[0]['id']
+        elif len(result) > 0:
+            if param_cursor > 0:
+                prev_cursor = (-1) * result[-1]['id']
+            elif param_cursor < 0:
+                next_cursor = result[0]['id']
+
+        cursor = {'prev': prev_cursor, 'next': next_cursor}
+
+        return jsonify(result=result, cursor=cursor), 200
     except:
         logging.error(request)
     return '', 404

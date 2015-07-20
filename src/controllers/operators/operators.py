@@ -25,7 +25,7 @@ def create():
     try:
         operator = Operator(
             id=None,
-            username=req['username'],
+            username=req['username'].encode('utf-8'),
             password=req['password'],
             salt='salt1',
             state=req['state'],
@@ -47,11 +47,60 @@ def create():
 @app.route('/', methods=['GET'])
 @crossdomain(origin='*')
 def index():
+    per_page = 20
+    param_id = request.args.get('id', '')
+    if isinstance(param_id, str) and not param_id.isdigit():
+        param_id = ''
+
+    # 0ならばcursorが指定されていない
+    param_cursor = request.args.get('cursor', 0)
+    if isinstance(param_cursor, str) and not param_cursor.isdigit():
+        param_cursor = 0
+
+    param_query = request.args.get('q', '')
+    param_query = param_query.encode('utf-8')
+
     try:
-        operators = get_operators()
+        # operators = get_operators()
+        operators = []
+        base_query = Operator.query
+        if param_id != '':
+            base_query = base_query.filter(Operator.id == param_id)
+
+        if param_query != '':
+            base_query = base_query.filter(Operator.username.like('%' + param_query + '%'))
+
+        param_cursor = int(param_cursor)
+        if param_cursor > 0:
+            base_query = base_query.filter(Operator.id >= param_cursor)
+        elif param_cursor < 0:
+            base_query = base_query.filter(Operator.id <= ((-1) * param_cursor))
+
+        base_query = base_query.order_by(Operator.id.desc()).limit(per_page + 1)
+        res = (base_query.all())
+
+        # res = Operator.query.all()
+        for row in res:
+            operators.append(row)
+
         operators_dict = ListOperatorMapper({'result': operators}).as_dict()
         result = operators_dict['result']
-        return jsonify(result=result), 200
+
+        prev_cursor = 0
+        next_cursor = 0
+
+        if len(result) == (per_page + 1):
+            prev_cursor = (-1) * result[-1]['id']
+            next_cursor = result[0]['id']
+        elif len(result) > 0:
+            if param_cursor > 0:
+                prev_cursor = (-1) * result[-1]['id']
+            elif param_cursor < 0:
+                next_cursor = result[0]['id']
+
+        cursor = {'prev': prev_cursor, 'next': next_cursor}
+
+        return jsonify(result=result, cursor=cursor), 200
     except:
         logging.error(request)
     return '', 404
@@ -76,12 +125,12 @@ def get_operator(operator_id):
     return operator
 
 
-def get_operators():
-    operators = []
-    res = Operator.query.all()
-    for row in res:
-        operators.append(row)
-    return operators
+# def get_operators():
+#     operators = []
+#     res = Operator.query.all()
+#     for row in res:
+#         operators.append(row)
+#     return operators
 
 
 @app.route('/<operator_id>', methods=['PUT'])
