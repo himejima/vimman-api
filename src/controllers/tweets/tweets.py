@@ -77,9 +77,9 @@ def index():
 
         param_cursor = int(param_cursor)
         if param_cursor > 0:
-            base_query = base_query.filter(Tweet.id > param_cursor)
+            base_query = base_query.filter(Tweet.id >= param_cursor)
         elif param_cursor < 0:
-            base_query = base_query.filter(Tweet.id < ((-1) * param_cursor))
+            base_query = base_query.filter(Tweet.id <= ((-1) * param_cursor))
 
         base_query = base_query.order_by(Tweet.id.desc()).limit(per_page + 1)
 
