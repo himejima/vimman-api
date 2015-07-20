@@ -28,8 +28,8 @@ def create():
     created_at = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
     created_by = 0  # TODO: created user
     req = json.loads(request.data)
-    trans = db_session.begin(subtransactions=True)
     try:
+        db_session.begin(subtransactions=True)
         question = Question(
             id=None,
             content=req['content'].encode('utf-8'),
@@ -55,14 +55,15 @@ def create():
             )
             db_session.add(answer)
         db_session.flush()
-        trans.commit()
+        db_session.commit()
         result = {}
         result['id'] = question.id
         result['state'] = question.state
         result['content'] = question.content
         return jsonify(result=result), 201
     except:
-        trans.rollback()
+        db_session.rollback()
+        db_session.close()
         logging.error(req)
     return '', 400
 
@@ -81,6 +82,7 @@ def index_questions():
         param_cursor = 0
 
     param_query = request.args.get('q', '')
+    param_query = param_query.encode('utf-8')
 
     try:
         questions = []
@@ -93,9 +95,9 @@ def index_questions():
 
         param_cursor = int(param_cursor)
         if param_cursor > 0:
-            base_query = base_query.filter(Question.id > param_cursor)
+            base_query = base_query.filter(Question.id >= param_cursor)
         elif param_cursor < 0:
-            base_query = base_query.filter(Question.id < ((-1) * param_cursor))
+            base_query = base_query.filter(Question.id <= ((-1) * param_cursor))
 
         base_query = base_query.order_by(Question.id.desc()).limit(per_page + 1)
         #res = Question.query.all()

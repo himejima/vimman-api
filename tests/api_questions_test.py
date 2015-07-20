@@ -155,6 +155,33 @@ class ApiQuestionsTestCase(unittest.TestCase):
         )
         assert raw_response.status_code == 404
 
+    # TODO: データ依存のテストを追加
+    def test_index_filter(self):
+        content_body = {
+            'content': 'question-5かきくけこ',
+            'answers': 'answer-5_1\r\nanswer-5_2\r\nあいう',
+            'state': '2'
+        }
+        raw_response = self.app.post(
+            '/questions/',
+            content_type='application/json',
+            data=json.dumps(content_body)
+        )
+        assert raw_response.status_code == 201
+
+        raw_response = self.app.get(
+            '/questions/?q=かき'
+        )
+        response = json.loads(raw_response.data)
+        assert raw_response.status_code == 200
+        assert len(response['result']) > 0
+ 
+        raw_response = self.app.get(
+            '/questions/?q=xxxxxxxx'
+        )
+        response = json.loads(raw_response.data)
+        assert raw_response.status_code == 200
+        assert len(response['result']) == 0
 
 def suite():
     suite = unittest.TestSuite()
