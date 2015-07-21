@@ -68,13 +68,11 @@ class ApiQuestionsTestCase(unittest.TestCase):
             'answers': 'answer-1',
             'state': '1'
         }
-        print 'question.test_read\n'
         raw_response = self.app.post(
             '/questions/',
             content_type='application/json',
             data=json.dumps(content_body)
         )
-        print raw_response
         created = json.loads(raw_response.data)
         raw_response = self.app.get(
             '/questions/%d' % created['result']['id']
@@ -119,18 +117,18 @@ class ApiQuestionsTestCase(unittest.TestCase):
         assert response['result']['state'] == 3
         assert response['result']['content'] == 'question-33'
 
-#    def test_unknown_update(self):
-#        content_body = {
-#            'username' : 'anything',
-#            'password' : 'hogehoge',
-#            'state'    : '3'
-#        }
-#        raw_response = self.app.put(
-#            '/questions/%d' % 1000000,
-#            content_type='application/json',
-#            data=json.dumps(content_body)
-#        )
-#        assert raw_response.status_code == 404
+    def test_unknown_update(self):
+        content_body = {
+            'content': 'unknown-question-1',
+            'answers': 'unknown-answer-1',
+            'state': '2'
+        }
+        raw_response = self.app.put(
+            '/questions/%d' % 1000000,
+            content_type='application/json',
+            data=json.dumps(content_body)
+        )
+        assert raw_response.status_code == 400
 
     def test_delete(self):
         content_body = {
@@ -158,8 +156,8 @@ class ApiQuestionsTestCase(unittest.TestCase):
     # TODO: データ依存のテストを追加
     def test_index_filter(self):
         content_body = {
-            'content': 'question-5かきくけこ',
-            'answers': 'answer-5_1\r\nanswer-5_2\r\nあいう',
+            'content': u'question-5かきくけこ',
+            'answers': u'answer-5_1\r\nanswer-5_2\r\nあいう',
             'state': '2'
         }
         raw_response = self.app.post(
@@ -170,7 +168,7 @@ class ApiQuestionsTestCase(unittest.TestCase):
         assert raw_response.status_code == 201
 
         raw_response = self.app.get(
-            '/questions/?q=かき'
+            u'/questions/?q=かき'
         )
         response = json.loads(raw_response.data)
         assert raw_response.status_code == 200

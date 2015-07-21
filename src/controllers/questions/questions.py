@@ -188,8 +188,9 @@ def edit_question(question_id):
         result['content'] = question.content
         return jsonify(result=result), 201
     except:
-        logging.error(req)
         db_session.rollback()
+        db_session.close()
+        logging.error(req)
     return '', 400
 
 
