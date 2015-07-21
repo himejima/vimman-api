@@ -13,7 +13,7 @@ class ApiInformationsTestCase(unittest.TestCase):
     def setUpClass(self):
         # テスト実行前に1回のみ実行する
         conn = engine.connect()
-        conn.execute('TRUNCATE TABLE informations');
+        conn.execute('TRUNCATE TABLE informations')
 
         # TODO: close書かないと lockされるかもしれない
 
@@ -213,7 +213,6 @@ class ApiInformationsTestCase(unittest.TestCase):
         response = json.loads(raw_response.data)
         assert raw_response.status_code == 200
         assert len(response['result']) == 1
-
 
     # TODO: 別のテストで作成されたデータに依存しているので分離する
     def test_index_filter_by_plus_cursor(self):
