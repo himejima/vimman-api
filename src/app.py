@@ -40,9 +40,6 @@ app.register_blueprint(responses.app, url_prefix='/responses')
 from controllers.tweets import tweets
 app.register_blueprint(tweets.app, url_prefix='/tweets')
 
-from controllers.users import users
-app.register_blueprint(users.app, url_prefix='/users')
-
 
 if __name__ == '__main__':
     app.run()
