@@ -5,9 +5,18 @@ import sys
 import unittest
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/../src/')
 import app
+from models.model import *  # NOQA TODO: 呼び出し方を変更したい
 
 
 class ApiInformationsTestCase(unittest.TestCase):
+    @classmethod
+    def setUpClass(self):
+        # テスト実行前に1回のみ実行する
+        conn = engine.connect()
+        conn.execute('TRUNCATE TABLE informations');
+
+        # TODO: close書かないと lockされるかもしれない
+
     def setUp(self):
         app.app.debug = False
         self.app = app.app.test_client()
@@ -170,8 +179,7 @@ class ApiInformationsTestCase(unittest.TestCase):
         )
         assert raw_response.status_code == 404
 
-    # TODO: データ依存のテストを追加
-    def test_index_filter(self):
+    def test_index_filter_by_q(self):
         content_body = {
             'content': 'content-あいうえお',
             'state': '1'
@@ -196,6 +204,50 @@ class ApiInformationsTestCase(unittest.TestCase):
         response = json.loads(raw_response.data)
         assert raw_response.status_code == 200
         assert len(response['result']) == 0
+
+    # TODO: 別のテストで作成されたデータに依存しているので分離する
+    def test_index_filter_by_id(self):
+        raw_response = self.app.get(
+            '/informations/?id=1'
+        )
+        response = json.loads(raw_response.data)
+        assert raw_response.status_code == 200
+        assert len(response['result']) == 1
+
+
+    # TODO: 別のテストで作成されたデータに依存しているので分離する
+    def test_index_filter_by_plus_cursor(self):
+        # データ準備
+        for i in range(25):
+            content_body = {
+                'content': 'content-cursor-%d' % (i + 1),
+                'state': '1'
+            }
+            raw_response = self.app.post(
+                '/informations/',
+                content_type='application/json',
+                data=json.dumps(content_body)
+            )
+
+        # TODO: q= を追い出す
+        raw_response = self.app.get(
+            '/informations/?q=cursor&cursor=1'
+        )
+
+        response = json.loads(raw_response.data)
+        assert raw_response.status_code == 200
+        assert len(response['result']) == 21
+
+    # TODO: 別のテストで作成されたデータに依存しているので分離する
+    def test_index_filter_by_minus_cursor(self):
+        # TODO: q= を追い出す
+        raw_response = self.app.get(
+            '/informations/?q=cursor&cursor=-10'
+        )
+
+        response = json.loads(raw_response.data)
+        assert raw_response.status_code == 200
+        assert len(response['result']) < 20
 
 
 def suite():
