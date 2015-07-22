@@ -214,6 +214,13 @@ class ApiInformationsTestCase(unittest.TestCase):
         assert raw_response.status_code == 200
         assert len(response['result']) == 1
 
+    def test_invalid_index_filter_by_cursor(self):
+        raw_response = self.app.get(
+            '/informations/?cursor=なにぬ'
+        )
+
+        assert raw_response.status_code == 404
+
     # TODO: 別のテストで作成されたデータに依存しているので分離する
     def test_index_filter_by_plus_cursor(self):
         # データ準備
@@ -247,6 +254,26 @@ class ApiInformationsTestCase(unittest.TestCase):
         response = json.loads(raw_response.data)
         assert raw_response.status_code == 200
         assert len(response['result']) < 20
+
+    # curorがplusで次のページがない
+    def test_cursor_plus_not_next(self):
+        raw_response = self.app.get(
+            '/informations/?q=cursor&cursor=15'
+        )
+
+        response = json.loads(raw_response.data)
+        assert raw_response.status_code == 200
+        assert response['cursor']['next'] == 0
+
+    # cursorがminuxで次のページがない
+    def test_cursor_minus_not_next(self):
+        raw_response = self.app.get(
+            '/informations/?q=cursor&cursor=-10'
+        )
+
+        response = json.loads(raw_response.data)
+        assert raw_response.status_code == 200
+        assert response['cursor']['prev'] == 0
 
 
 def suite():

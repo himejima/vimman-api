@@ -51,19 +51,21 @@ def create():
 def index():
     # per_pageとpageを取得
     per_page = 20
-    param_id = request.args.get('id', '')
-    if isinstance(param_id, str) and not param_id.isdigit():
-        param_id = ''
-
-    # 0ならばcursorが指定されていない
-    param_cursor = request.args.get('cursor', 0)
-    if isinstance(param_cursor, str) and not param_cursor.isdigit():
-        param_cursor = 0
-
-    param_query = request.args.get('q', '')
-    param_query = param_query.encode('utf-8')
-
     try:
+        param_id = request.args.get('id', '')
+        if isinstance(param_id, str) and not param_id.isdigit():
+            param_id = ''
+
+        # 0ならばcursorが指定されていない
+        param_cursor = request.args.get('cursor', 0)
+        # TODO: 負の値を変換できるかどうかのチェックをいれる
+        # if isinstance(param_cursor, unicode) and not param_cursor.isdigit():
+        #     param_cursor = 0
+        param_cursor = int(param_cursor)
+
+        param_query = request.args.get('q', '')
+        param_query = param_query.encode('utf-8')
+
         informations = []
         # memo queryの順番
         base_query = Information.query
@@ -73,7 +75,7 @@ def index():
         if param_query != '':
             base_query = base_query.filter(Information.content.like('%' + param_query + '%'))
 
-        param_cursor = int(param_cursor)
+        logging.error(param_cursor)
         if param_cursor > 0:
             base_query = base_query.filter(Information.id >= param_cursor)
         elif param_cursor < 0:
@@ -81,7 +83,7 @@ def index():
 
         base_query = base_query.order_by(Information.id.desc()).limit(per_page + 1)
 
-        # logging.error(base_query)
+        logging.error(base_query)
 
         res = (base_query.all())
 
@@ -109,6 +111,7 @@ def index():
 
         return jsonify(result=result, cursor=cursor), 200
     except:
+        # TODO: api keyの認証がなかったら通るようにする
         logging.error(request)
     return '', 404
 
