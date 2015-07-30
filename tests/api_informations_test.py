@@ -15,6 +15,8 @@ class ApiInformationsTestCase(unittest.TestCase):
         conn = engine.connect()
         conn.execute('TRUNCATE TABLE informations')
 
+        # TODO: DELETE  -> ALTER auto increment調整
+
         # TODO: close書かないと lockされるかもしれない
 
     def setUp(self):
@@ -237,6 +239,17 @@ class ApiInformationsTestCase(unittest.TestCase):
         assert raw_response.status_code == 200
         assert len(response['result']) == 21
 
+    def test_index_filter_by_plus_cursor2(self):
+        # TODO: q= を追い出す
+        raw_response = self.app.get(
+            '/informations/?q=cursor&cursor=20'
+        )
+
+        response = json.loads(raw_response.data)
+        assert raw_response.status_code == 200
+        assert len(response['result']) < 20
+        assert response['cursor']['prev'] != 0
+
     # TODO: 別のテストで作成されたデータに依存しているので分離する
     def test_index_filter_by_minus_cursor(self):
         # TODO: q= を追い出す
@@ -247,6 +260,8 @@ class ApiInformationsTestCase(unittest.TestCase):
         response = json.loads(raw_response.data)
         assert raw_response.status_code == 200
         assert len(response['result']) < 20
+        # assert response['cursor']['next'] != 0
+        # print response['cursor']['next']
 
 
 def suite():
