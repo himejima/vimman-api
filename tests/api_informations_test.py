@@ -7,9 +7,6 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/../src/')
 import app
 from models.model import *  # NOQA TODO: 呼び出し方を変更したい
 
-import tempfile
-
-
 class ApiInformationsTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(self):
