@@ -13,11 +13,10 @@ class ApiInformationsTestCase(unittest.TestCase):
     def setUpClass(self):
         # テスト実行前に1回のみ実行する
         conn = engine.connect()
-        conn.execute('TRUNCATE TABLE informations')
-
-        # TODO: DELETE  -> ALTER auto increment調整
-
-        # TODO: close書かないと lockされるかもしれない
+        trans = conn.begin()
+        # conn.execute('TRUNCATE TABLE informations')
+        conn.execute('DELETE FROM informations')
+        trans.commit()
 
     def setUp(self):
         app.app.debug = False
@@ -207,10 +206,20 @@ class ApiInformationsTestCase(unittest.TestCase):
         assert raw_response.status_code == 200
         assert len(response['result']) == 0
 
-    # TODO: 別のテストで作成されたデータに依存しているので分離する
     def test_index_filter_by_id(self):
+        content_body = {
+            'content': 'content-index-id',
+            'state': '3'
+        }
+        raw_response = self.app.post(
+            '/informations/',
+            content_type='application/json',
+            data=json.dumps(content_body)
+        )
+        created = json.loads(raw_response.data)
+
         raw_response = self.app.get(
-            '/informations/?id=1'
+            '/informations/?id=%d' % created['result']['id']
         )
         response = json.loads(raw_response.data)
         assert raw_response.status_code == 200
@@ -246,10 +255,25 @@ class ApiInformationsTestCase(unittest.TestCase):
         assert raw_response.status_code == 200
         assert len(response['result']) == 21
 
+    # TODO: 別のテストで作成されたデータに依存しているので分離する
     def test_index_filter_by_plus_cursor2(self):
+        for i in range(15):
+            content_body = {
+                'content': 'content-plus-cursor2-%d' % (i + 1),
+                'state': '1'
+            }
+            raw_response = self.app.post(
+                '/informations/',
+                content_type='application/json',
+                data=json.dumps(content_body)
+            )
+
+            if i == 12:
+                created = json.loads(raw_response.data)
+
         # TODO: q= を追い出す
         raw_response = self.app.get(
-            '/informations/?q=cursor&cursor=20'
+            '/informations/?q=plus-cursor2&cursor=%s' % created['result']['id']
         )
 
         response = json.loads(raw_response.data)
@@ -259,15 +283,26 @@ class ApiInformationsTestCase(unittest.TestCase):
 
     # TODO: 別のテストで作成されたデータに依存しているので分離する
     def test_index_filter_by_minus_cursor(self):
+        # データ準備
+        for i in range(10):
+            content_body = {
+                'content': 'content-minus-cursor-%d' % (i + 1),
+                'state': '1'
+            }
+            raw_response = self.app.post(
+                '/informations/',
+                content_type='application/json',
+                data=json.dumps(content_body)
+            )
         # TODO: q= を追い出す
         raw_response = self.app.get(
-            '/informations/?q=cursor&cursor=-10'
+            '/informations/?q=minus-cursor&cursor=-100000'
         )
 
         response = json.loads(raw_response.data)
         assert raw_response.status_code == 200
         assert len(response['result']) < 20
-        # assert response['cursor']['next'] != 0
+        assert response['cursor']['next'] != 0
         # print response['cursor']['next']
 
     # curorがplusで次のページがない
