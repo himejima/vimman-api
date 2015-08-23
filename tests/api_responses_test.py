@@ -99,7 +99,7 @@ class ApiResponsesTestCase(unittest.TestCase):
 
     def test_unknown_read(self):
         raw_response = self.app.get(
-            '/tweets/%d' % 1000000
+            '/responses/%d' % 1000000
         )
         assert raw_response.status_code == 404
 
