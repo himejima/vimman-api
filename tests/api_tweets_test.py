@@ -162,7 +162,7 @@ class ApiTweetsTestCase(unittest.TestCase):
     # cursorに数字以外の文字を入れる
     def test_invalid_index_filter_by_cursor(self):
         raw_response = self.app.get(
-            '/tests/?cursor=なにぬ'
+            '/tweets/?cursor=なにぬ'
         )
 
         assert raw_response.status_code == 404
