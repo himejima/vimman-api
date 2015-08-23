@@ -5,7 +5,7 @@ import sys
 import unittest
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/../src/')
 import app
-from models.model import * # NOQA
+from models.model import *  # NOQA
 
 
 class ApiTweetsTestCase(unittest.TestCase):
@@ -160,7 +160,7 @@ class ApiTweetsTestCase(unittest.TestCase):
         assert len(response['result']) == 1
 
     # TODO: 別のテストで作成されたデータに依存しているので分離する
-    # cursorで指定したときに、次のページが取得できる 
+    # cursorで指定したときに、次のページが取得できる
     def test_index_filter_by_plus_cursor(self):
         # データ準備
         for i in range(25):
@@ -241,6 +241,7 @@ class ApiTweetsTestCase(unittest.TestCase):
         assert len(response['result']) < 20
         assert response['cursor']['next'] != 0
         # print response['cursor']['next']
+
 
 def suite():
     suite = unittest.TestSuite()
