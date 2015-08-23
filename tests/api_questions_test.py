@@ -138,6 +138,20 @@ class ApiQuestionsTestCase(unittest.TestCase):
         )
         assert raw_response.status_code == 400
 
+    # 不正なcontent type
+    def test_invalid_content_type_update(self):
+        content_body = {
+            'content': 'unknown-question-1',
+            'answers': 'unknown-answer-1',
+            'state': '2'
+        }
+        raw_response = self.app.post(
+            '/questions/',
+            content_type='text/html',
+            data=json.dumps(content_body)
+        )
+        assert raw_response.status_code == 400
+
     def test_delete(self):
         content_body = {
             'content': 'question-4',
