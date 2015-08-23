@@ -72,19 +72,20 @@ def create():
 @crossdomain(origin='*')
 def index_questions():
     per_page = 20
-    param_id = request.args.get('id', '')
-    if isinstance(param_id, str) and not param_id.isdigit():
-        param_id = ''
-
-    # 0ならばcursorが指定されていない
-    param_cursor = request.args.get('cursor', 0)
-    if isinstance(param_cursor, str) and not param_cursor.isdigit():
-        param_cursor = 0
-
-    param_query = request.args.get('q', '')
-    param_query = param_query.encode('utf-8')
-
     try:
+        param_id = request.args.get('id', '')
+        if isinstance(param_id, str) and not param_id.isdigit():
+            param_id = ''
+
+        # 0ならばcursorが指定されていない
+        param_cursor = request.args.get('cursor', 0)
+        # if isinstance(param_cursor, str) and not param_cursor.isdigit():
+        #     param_cursor = 0
+        param_cursor = int(param_cursor)
+
+        param_query = request.args.get('q', '')
+        param_query = param_query.encode('utf-8')
+
         questions = []
         base_query = Question.query
         if param_id != '':

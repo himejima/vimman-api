@@ -5,9 +5,17 @@ import sys
 import unittest
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/../src/')
 import app
+from models.model import *  # NOQA
 
 
 class ApiResponsesTestCase(unittest.TestCase):
+    @classmethod
+    def setUpClass(self):
+        conn = engine.connect()
+        trans = conn.begin()
+        conn.execute('DELETE FROM responses')
+        trans.commit()
+
     def setUp(self):
         app.app.debug = False
         self.app = app.app.test_client()
@@ -91,7 +99,7 @@ class ApiResponsesTestCase(unittest.TestCase):
 
     def test_unknown_read(self):
         raw_response = self.app.get(
-            '/tweets/%d' % 1000000
+            '/responses/%d' % 1000000
         )
         assert raw_response.status_code == 404
 
@@ -182,8 +190,8 @@ class ApiResponsesTestCase(unittest.TestCase):
         )
         assert raw_response.status_code == 404
 
-    # TODO: データ依存のテストを追加
-    def test_index_filter(self):
+    # get parameterのq で検索がヒットする + 検索がヒットしない
+    def test_index_filter_by_q(self):
         content_body = {
             'type': 'ok',
             'content': u'content-あいうえお',
@@ -209,6 +217,114 @@ class ApiResponsesTestCase(unittest.TestCase):
         response = json.loads(raw_response.data)
         assert raw_response.status_code == 200
         assert len(response['result']) == 0
+
+    # idで検索ができるテスト
+    def test_index_filter_by_id(self):
+        content_body = {
+            'type': 'ok',
+            'content': u'content-by-id',
+            'state': '1'
+        }
+        raw_response = self.app.post(
+            '/responses/',
+            content_type='application/json',
+            data=json.dumps(content_body)
+        )
+        created = json.loads(raw_response.data)
+
+        raw_response = self.app.get(
+            '/responses/?id=%d' % created['result']['id']
+        )
+        response = json.loads(raw_response.data)
+        assert raw_response.status_code == 200
+        assert len(response['result']) == 1
+
+    # cursorに数字以外の文字を入れる
+    def test_invalid_index_filter_by_cursor(self):
+        raw_response = self.app.get(
+            '/responses/?cursor=なにぬ'
+        )
+
+        assert raw_response.status_code == 404
+
+    # TODO: 別のテストで作成されたデータに依存しているので分離する
+    # cursorで指定したときに、次のページが取得できる
+    def test_index_filter_by_plus_cursor(self):
+        # データ準備
+        for i in range(25):
+            content_body = {
+                'type': 'ok',
+                'content': u'content-cursor-%d' % (i + 1),
+                'state': '1'
+            }
+            raw_response = self.app.post(
+                '/responses/',
+                content_type='application/json',
+                data=json.dumps(content_body)
+            )
+
+        # TODO: q= を追い出す
+        raw_response = self.app.get(
+            '/responses/?q=cursor&cursor=1'
+        )
+
+        response = json.loads(raw_response.data)
+        assert raw_response.status_code == 200
+        assert len(response['result']) == 21
+
+    # TODO: 別のテストで作成されたデータに依存しているので分離する
+    # cursorの値がプラスで、次のページがない
+    def test_index_filter_by_plus_cursor2(self):
+        for i in range(15):
+            content_body = {
+                'type': 'ok',
+                'content': 'content-plus-cursor2-%d' % (i + 1),
+                'state': '1'
+            }
+            raw_response = self.app.post(
+                '/responses/',
+                content_type='application/json',
+                data=json.dumps(content_body)
+            )
+
+            if i == 12:
+                created = json.loads(raw_response.data)
+
+        # TODO: q= を追い出す
+        raw_response = self.app.get(
+            '/responses/?q=plus-cursor2&cursor=%s' % created['result']['id']
+        )
+
+        response = json.loads(raw_response.data)
+        assert raw_response.status_code == 200
+        assert len(response['result']) < 20
+        assert response['cursor']['prev'] != 0
+
+    # TODO: 別のテストで作成されたデータに依存しているので分離する
+    # cursorの値がマイナスで、次のページがない
+    def test_index_filter_by_minus_cursor(self):
+        # データ準備
+        for i in range(10):
+            content_body = {
+                'type': 'ok',
+                'content': 'content-minus-cursor-%d' % (i + 1),
+                'state': '1'
+            }
+            raw_response = self.app.post(
+                '/responses/',
+                content_type='application/json',
+                data=json.dumps(content_body)
+            )
+
+        # TODO: q= を追い出す
+        raw_response = self.app.get(
+            '/responses/?q=minus-cursor&cursor=-100000'
+        )
+
+        response = json.loads(raw_response.data)
+        assert raw_response.status_code == 200
+        assert len(response['result']) < 20
+        assert response['cursor']['next'] != 0
 
 
 def suite():
