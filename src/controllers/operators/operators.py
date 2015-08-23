@@ -175,8 +175,8 @@ def delete(operator_id):
     return '', 404
 
 
-def delete_all():
-    try:
-        Operator.query.delete()
-    except:
-        logging.error(request)
+# def delete_all():
+#     try:
+#         Operator.query.delete()
+#     except:
+#         logging.error(request)
