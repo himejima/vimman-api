@@ -159,6 +159,14 @@ class ApiTweetsTestCase(unittest.TestCase):
         assert raw_response.status_code == 200
         assert len(response['result']) == 1
 
+    # cursorに数字以外の文字を入れる
+    def test_invalid_index_filter_by_cursor(self):
+        raw_response = self.app.get(
+            '/tests/?cursor=なにぬ'
+        )
+
+        assert raw_response.status_code == 404
+
     # TODO: 別のテストで作成されたデータに依存しているので分離する
     # cursorで指定したときに、次のページが取得できる
     def test_index_filter_by_plus_cursor(self):
