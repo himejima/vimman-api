@@ -13,7 +13,7 @@ script:
   - python -m unittest discover -s tests/ -p '*_test.py'
   - coverage run --source=src setup.py test
 after_success:
-  - coveralls
+  - coveralls -e src/helpers
 deploy:
   provider: heroku
   app: vimman-api
