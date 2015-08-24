@@ -147,6 +147,18 @@ class ApiQuestionsTestCase(unittest.TestCase):
         }
         raw_response = self.app.post(
             '/questions/',
+            content_type='application/json',
+            data=json.dumps(content_body)
+        )
+        created = json.loads(raw_response.data)
+
+        content_body = {
+            'content': 'unknown-question-update-1',
+            'answers': 'unknown-answer-update-1',
+            'state': '2'
+        }
+        raw_response = self.app.put(
+            '/questions/%d' % created['result']['id'],
             content_type='text/html',
             data=json.dumps(content_body)
         )
