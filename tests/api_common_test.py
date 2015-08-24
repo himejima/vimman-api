@@ -12,7 +12,7 @@ class ApiCommonTestCase(unittest.TestCase):
         app.app.debug = False
         self.app = app.app.test_client()
 
-    # 存在しないurlにアクセス
+    # 存在しない url にアクセス
     def test_not_found(self):
         raw_response = self.app.get(
             '/notfoundxxxxx/'
